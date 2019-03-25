@@ -12,9 +12,11 @@ function adulterateNock() {
     nock.removeInterceptor(tempInterceptor);
     if(!interceptorProto.replyWithDefault){
         interceptorProto.replyWithDefault =  function(responseCode: number, modifyBody: (body: any) => any) {
-            let interceptor = this;
-            return interceptor.reply(responseCode, function(uri: any, requestBody: any, nockCallBack: nock.ReplyCallback){
-                let self: any = this;
+            let interceptor: nock.Interceptor = this;
+            // TODO: Will work when fixed https://jira.we.co/browse/TI-406
+            // interceptor.reply(...).matchHeader('nock-setting', val => val === undefined);
+            return interceptor.reply(responseCode, (uri: any, requestBody: any, nockCallBack: nock.ReplyCallback) => {
+                let self: any = interceptor;
                 let headers = self.req.headers;
                 headers['nock-setting'] = 'bypass';
                 nock.restore(); // TODO: Delete on fix https://jira.we.co/browse/TI-406
