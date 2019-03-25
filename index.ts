@@ -1,14 +1,15 @@
 import httpProxy from 'http-proxy';
 import config from 'config';
-require('./wem2k');
+import WeM2k from './wem2k';
 
-let targetServer: string;
+let responseGeneratorUrl: string;
 let port: string = config.get('port');
 if(config.has('responseGenerator')) {
-	targetServer = config.get('responseGenerator');
+	responseGeneratorUrl = config.get('responseGenerator');
 } else {
-	targetServer = 'http://example.com'
+	responseGeneratorUrl = 'http://example.com'
 }
+global.WeM2k = new WeM2k(responseGeneratorUrl);
 if(config.has('serverConfig')){
 	require(config.get('serverConfig'));
 }
@@ -16,7 +17,7 @@ if(config.has('serverConfig')){
 let proxyServer = httpProxy.createProxyServer({
 	changeOrigin: true,
 	selfHandleResponse: false,
-	target: targetServer,
-  });
+	target: responseGeneratorUrl,
+});
 proxyServer.listen(+port);
 
