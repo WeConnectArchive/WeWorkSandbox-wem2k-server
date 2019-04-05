@@ -17,7 +17,7 @@ global.WeM2k = new WeM2k(responseGeneratorUrl);
 
 if (config.has('serverConfig')) {
   require(config.get('serverConfig'));
-  debug('nock.pendingMocks')(`${nock.pendingMocks()}`);
+  debug('nock.mocks')(`${nock.pendingMocks()}`);
 }
 
 const proxyServer = httpProxy.createProxyServer({
