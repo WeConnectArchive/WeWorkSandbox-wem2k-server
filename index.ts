@@ -1,23 +1,29 @@
-import httpProxy from 'http-proxy';
 import config from 'config';
+import debug from 'debug';
+import httpProxy from 'http-proxy';
+import nock from 'nock';
 import WeM2k from './wem2k';
 
 let responseGeneratorUrl: string;
-let port: string = config.get('port');
-if(config.has('responseGenerator')) {
-	responseGeneratorUrl = config.get('responseGenerator');
+const port: string = config.get('port');
+
+if (config.has('targetServer')) {
+  responseGeneratorUrl = config.get('targetServer');
 } else {
-	responseGeneratorUrl = 'http://example.com'
+  responseGeneratorUrl = 'http://example.com';
 }
+
 global.WeM2k = new WeM2k(responseGeneratorUrl);
-if(config.has('serverConfig')){
-	require(config.get('serverConfig'));
+
+if (config.has('mockConfig')) {
+  require(config.get('mockConfig'));
+  debug('wem2k')(`nock.pendingMocks(): ${nock.pendingMocks()}`);
 }
 
-let proxyServer = httpProxy.createProxyServer({
-	changeOrigin: true,
-	selfHandleResponse: false,
-	target: responseGeneratorUrl,
+const proxyServer = httpProxy.createProxyServer({
+  changeOrigin: true,
+  selfHandleResponse: false,
+  target: responseGeneratorUrl,
 });
-proxyServer.listen(+port);
 
+proxyServer.listen(+port);
