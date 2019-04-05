@@ -26,4 +26,5 @@ const proxyServer = httpProxy.createProxyServer({
   target: responseGeneratorUrl,
 });
 
+debug('wem2k')('listening on port %s...', port);
 proxyServer.listen(+port);
