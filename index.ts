@@ -7,17 +7,17 @@ import WeM2k from './wem2k';
 let responseGeneratorUrl: string;
 const port: string = config.get('port');
 
-if (config.has('targetServer')) {
-  responseGeneratorUrl = config.get('targetServer');
+if (config.has('responseGenerator')) {
+  responseGeneratorUrl = config.get('responseGenerator');
 } else {
   responseGeneratorUrl = 'http://example.com';
 }
 
 global.WeM2k = new WeM2k(responseGeneratorUrl);
 
-if (config.has('mockConfig')) {
-  require(config.get('mockConfig'));
-  debug('wem2k')(`nock.pendingMocks(): ${nock.pendingMocks()}`);
+if (config.has('serverConfig')) {
+  require(config.get('serverConfig'));
+  debug('nock.pendingMocks')(`${nock.pendingMocks()}`);
 }
 
 const proxyServer = httpProxy.createProxyServer({

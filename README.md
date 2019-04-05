@@ -9,7 +9,6 @@ expects.
 
 * `responseGenerator`: This is the URL of a server which can generate default responses for the
      server that WeM2K Server is mocking out.
-* `mockConfig`: This is the path to a js file which configures how the server controls responses.
+* `serverConfig`: This is the path to a js file which configures how the server controls responses.
      This file can use [nock](www.github.com/nock/nock) syntax to control how the WeM2K server
      responds with two modifications. 
-
