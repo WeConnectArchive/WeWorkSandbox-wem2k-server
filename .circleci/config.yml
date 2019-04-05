@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Run Linter
           command: |
-            npm run lint
+            npm run lint-ci
       - store_artifacts:
           path: temp/lint-results
           destination: artifacts
