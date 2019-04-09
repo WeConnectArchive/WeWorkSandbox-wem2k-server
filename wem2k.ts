@@ -1,11 +1,13 @@
+import debug from 'debug';
+import jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
 
-/*
-** This function is used to modify the nock.Interceptor object. I was unable to
-** figure out a way to get at the Interceptor definition so I am grabbing the
-** prototype off of a temporary interceptor.
-*/
+/**
+ * This function is used to modify the nock.Interceptor object. I was unable to
+ * figure out a way to get at the Interceptor definition so I am grabbing the
+ * prototype off of a temporary interceptor.
+ */
 function adulterateNock() {
   const tempInterceptor: nock.Interceptor = nock('wem2k.com').get('/');
   const interceptorProto = Object.getPrototypeOf(tempInterceptor);
@@ -43,9 +45,38 @@ class WeM2k {
     this.responseGenerator = responseGenerator;
   }
 
+  /**
+   * This function is used to abstract nock from end users.
+   * @param options A list of nock options. defaults to {allowUnmocked: true}
+   * @returns scope
+   */
   public mock(options = {allowUnmocked: true}): nock.Scope {
     const scope = nock(this.responseGenerator, options);
     return scope;
+  }
+
+  /**
+   * This function is used to list pending mocked endpoints.
+   * @returns nock.pendingMocks();
+   */
+  public listPendingMocks(): string[] {
+    return nock.pendingMocks();
+  }
+
+  /**
+   * This function is used to create a JWT (JSON Web Token).
+   * It requires WE_AUTH_PRIVATE_KEY to be set to a valid RS256 private key
+   * and WE_AUTH_API_KEY to be set to a hex string in the environment.
+   * @param payload
+   * @returns an encoded JWT
+   */
+  public makeJWT(payload: any): string {
+    try {
+      const encodedJWT = jwt.encode(payload, process.env.WE_AUTH_PRIVATE_KEY, 'RS256');
+      return encodedJWT;
+    } catch(e) {
+      throw new Error('WE_AUTH_PRIVATE_KEY is missing')
+    }
   }
 }
 export = WeM2k;
