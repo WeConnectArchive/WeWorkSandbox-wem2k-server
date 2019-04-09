@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+cd "$(dirname "$0")/.."
+
+if [ -n "$CIRCLECI" ]; then
+  echo $DOCKER_PASSWD | docker login $DOCKER_REPOSITORY -u $DOCKER_USER --password-stdin
+  docker build -t quay.io/wework/wem2k-server:master -f Dockerfile .
+  docker push quay.io/wework/wem2k-server:master
+fi

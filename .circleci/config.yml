@@ -1,0 +1,61 @@
+version: 2
+defaults: &defaults
+  working_directory: ~/project
+  docker:
+  - image: quay.io/wework/wem2k-server:master
+    auth:
+      username: $DOCKER_USER
+      password: $DOCKER_PASSWD
+
+jobs:
+  lint:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: mkdir
+          command: |
+            mkdir -p temp/lint-results/lint
+      - run:
+          name: Install Linter
+          command: |
+            npm install tslint typescript
+      - run:
+          name: Run Linter
+          command: |
+            npm run lint-ci
+      - store_artifacts:
+          path: temp/lint-results
+          destination: artifacts
+
+  push:
+    docker:
+      - image: circleci/buildpack-deps
+    environment:
+      - DOCKER_REPOSITORY: 'quay.io/wework/wem2k-server'
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: docker push
+          command: |
+            .circleci/docker_push
+
+workflows:
+  version: 2
+  wem2k_workflow:
+    jobs:
+      - lint:
+          context: org-global
+      - push:
+          context: org-global
+          requires:
+            - lint
+          filters:
+            branches:
+              only: master
+
+notify:
+  webhooks:
+  # Post the build result to starcatcher for ETL.
+  - url: https://starcatcher-staging.herokuapp.com/webhooks/circleci_build
