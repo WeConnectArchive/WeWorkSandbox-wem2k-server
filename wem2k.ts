@@ -74,8 +74,8 @@ class WeM2k {
     try {
       const encodedJWT = jwt.encode(payload, process.env.WE_AUTH_PRIVATE_KEY, 'RS256');
       return encodedJWT;
-    } catch(e) {
-      throw new Error('WE_AUTH_PRIVATE_KEY is missing')
+    } catch (e) {
+      throw new Error('WE_AUTH_PRIVATE_KEY is missing');
     }
   }
 }
