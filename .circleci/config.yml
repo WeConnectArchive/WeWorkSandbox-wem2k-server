@@ -13,20 +13,35 @@ jobs:
     steps:
       - checkout
       - run:
-          name: mkdir
-          command: |
-            mkdir -p temp/lint-results/lint
-      - run:
           name: Install Linter
-          command: |
-            npm install tslint typescript
+          command: npm install tslint typescript
       - run:
           name: Run Linter
-          command: |
-            npm run lint-ci
-      - store_artifacts:
-          path: temp/lint-results
-          destination: artifacts
+          command: npm run lint
+
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: wem2k-npm-{{ checksum "package.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: wem2k-npm-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Run build
+          command: npm run build
+      - run:
+          name: Run Tests
+          command: npm run test
+          environment: 
+            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+      - store_test_results:
+          path: reports
 
   push:
     docker:
@@ -38,14 +53,15 @@ jobs:
       - setup_remote_docker
       - run:
           name: docker push
-          command: |
-            .circleci/docker_push
+          command: .circleci/docker_push
 
 workflows:
   version: 2
   wem2k_workflow:
     jobs:
       - lint:
+          context: org-global
+      - test:
           context: org-global
       - push:
           context: org-global
