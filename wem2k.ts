@@ -1,4 +1,3 @@
-import debug from 'debug';
 import jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
@@ -47,7 +46,9 @@ class WeM2k {
 
   /**
    * This function is used to abstract nock from end users.
-   * @param options A list of nock options. defaults to {allowUnmocked: true}
+   * @param options A list of {@link https://github.com/nock/nock#options | nock options}.
+   *
+   * Defaults to {allowUnmocked: true}
    * @returns scope
    */
   public mock(options = {allowUnmocked: true}): nock.Scope {
@@ -57,16 +58,17 @@ class WeM2k {
 
   /**
    * This function is used to list pending mocked endpoints.
-   * @returns nock.pendingMocks();
+   * @returns an array of strings containing the url of all pending mocks
    */
   public listPendingMocks(): string[] {
     return nock.pendingMocks();
   }
 
   /**
-   * This function is used to create a JWT (JSON Web Token).
-   * It requires WE_AUTH_PRIVATE_KEY to be set to a valid RS256 private key
-   * and WE_AUTH_API_KEY to be set to a hex string in the environment.
+   * This function is used to create a JWT (JSON Web Token) for authentication.
+   * It depends on the following environment variables:
+   *
+   * WE_AUTH_PRIVATE_KEY - Set to a valid RS256 private key
    * @param payload
    * @returns an encoded JWT
    */
