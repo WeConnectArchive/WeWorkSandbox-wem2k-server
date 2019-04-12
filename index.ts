@@ -1,7 +1,6 @@
 import config from 'config';
 import debug from 'debug';
 import httpProxy from 'http-proxy';
-import nock from 'nock';
 import WeM2k from './wem2k';
 
 let responseGeneratorUrl: string;
@@ -17,7 +16,7 @@ global.WeM2k = new WeM2k(responseGeneratorUrl);
 
 if (config.has('serverConfig')) {
   require(config.get('serverConfig'));
-  debug('nock.mocks')(`${nock.pendingMocks()}`);
+  debug('nock.mocks')(`${global.WeM2k.listPendingMocks()}`);
 }
 
 const proxyServer = httpProxy.createProxyServer({
@@ -26,5 +25,5 @@ const proxyServer = httpProxy.createProxyServer({
   target: responseGeneratorUrl,
 });
 
-debug('wem2k')('listening on port %s', port);
 proxyServer.listen(+port);
+debug('wem2k')('listening on port %s', port);
