@@ -3,9 +3,9 @@
  * made available to the `serverConfig` file.
  */
 
- /**
-  * Imports
-  */
+/**
+ * Imports
+ */
 import * as jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
@@ -13,7 +13,7 @@ import request from 'request';
 /**
  * This function is used to modify the nock.Interceptor object. I was unable to figure out a way to
  * get at the Interceptor definition so I am grabbing the prototype off of a temporary interceptor.
-*/
+ */
 (function adulterateNock() {
     const tempInterceptor: nock.Interceptor = nock('wem2k.com').get('/');
     const interceptorProto = Object.getPrototypeOf(tempInterceptor);

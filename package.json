@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "debug": "DEBUG='*' npm start",
+    "debug": "DEBUG='*' npm run start",
     "doc": "typedoc --out dist/docs --mode modules --exclude 'node_modules/**' .",
     "lint": "tslint --project .",
-    "lint-ci": "tslint --project . -t junit -o temp/lint-results/tslint.xml",
+    "lint-ci": "npm run lint -- --format junit --out reports/lint/lint.xml",
     "server": "node dist/index.js",
     "start": "npm run server",
     "test": "jest"
