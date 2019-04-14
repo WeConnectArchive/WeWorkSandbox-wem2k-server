@@ -1,3 +1,11 @@
+/**
+ * This is the entry point to the server. It simply loads the config and starts the mocking server.
+ */
+
+/**
+ * Imports
+ */
 import config from 'config';
 import Server from './lib/server';
-new Server(config).start();
+const mockServer = new Server(config);
+mockServer.start();

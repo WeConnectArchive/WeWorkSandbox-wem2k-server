@@ -1,6 +1,7 @@
 import { IConfig } from 'config';
 import express from 'express';
 import fs from 'fs';
+import http from 'http';
 import temp from 'temp';
 import Server from '../lib/server';
 import MockConfig from './mock';
@@ -45,6 +46,7 @@ function makeTempJSFile(text: string): Promise<string> {
         });
     });
 }
+
 describe('The WeM2k mocking server', () => {
     describe('when there is no mocking config', () => {
         let config: IConfig;
@@ -52,13 +54,13 @@ describe('The WeM2k mocking server', () => {
         let mockServer: Server;
         let responseGenerator: StaticServer;
 
-        beforeAll(() => {
+        beforeAll((): Promise<[http.Server, http.Server]> => {
             config = new MockConfig({
                 port: '8000',
                 responseGenerator: 'http://localhost:1111',
             });
             requestBuilder = new rb.RequestBuilder(config);
-            responseGenerator = new StaticServer((app: express.Express) => {
+            responseGenerator = new StaticServer(1111, (app: express.Express) => {
                 app.get('/route1', (_0: express.Request, res: express.Response, _1: express.NextFunction): any => {
                     res.status(200).send('Hello World!');
                 });
@@ -67,12 +69,12 @@ describe('The WeM2k mocking server', () => {
                 });
             });
             mockServer = new Server(config);
-            return Promise.all([mockServer.start(), responseGenerator.start(1111)]);
+            return Promise.all([mockServer.start(), responseGenerator.start()]);
         });
         afterAll(() => {
             return Promise.all([mockServer.stop(), responseGenerator.stop()]);
         });
-        test('when the route is valid it replies with values from the response generator', () => {
+        test('and the route is valid, it replies with values from the response generator', () => {
             return requestBuilder.request('get', '/route1').then((response: rb.RBResponse) => {
                 expect(response.response.statusCode).toEqual(200);
                 expect(response.body).toEqual('Hello World!');
@@ -83,7 +85,7 @@ describe('The WeM2k mocking server', () => {
                 expect(response.body).toEqual('Another response');
             });
         });
-        test('when the route is invalid it replies with a 404 from the response generator', () => {
+        test('and the route is invalid, it replies with a 404 from the response generator', () => {
             return requestBuilder.request('get', '/route3').then((response: rb.RBResponse) => {
                 expect(response.response.statusCode).toEqual(404);
             });
@@ -95,7 +97,7 @@ describe('The WeM2k mocking server', () => {
         let responseGenerator: StaticServer;
         let mockServer: Server;
 
-        beforeAll((): Promise<[void, void]> => {
+        beforeAll((): Promise<[http.Server, http.Server]> => {
             return makeTempJSFile('\
 WeM2k.mock()\n\
      .get("/route1")\n\
@@ -104,14 +106,14 @@ WeM2k.mock()\n\
      .get("/route2")\n\
      .replyWithDefault(201, function (body){\n\
          return body + " form of lion"\n\
-     })\n').then((fileName: string): Promise<[void, void]> => {
+     })\n').then((fileName: string): Promise<[http.Server, http.Server]> => {
                 config = new MockConfig({
                     port: '8002',
                     responseGenerator: 'http://localhost:1112',
                     serverConfig: fileName,
                 });
                 requestBuilder = new rb.RequestBuilder(config);
-                responseGenerator = new StaticServer((app: express.Express) => {
+                responseGenerator = new StaticServer(1112, (app: express.Express) => {
                     app.get('/route1', (_0: express.Request, res: express.Response, _1: express.NextFunction): any => {
                         res.status(200).send('Hello World!');
                     });
@@ -123,7 +125,7 @@ WeM2k.mock()\n\
                     });
                 });
                 mockServer = new Server(config);
-                return Promise.all([mockServer.start(), responseGenerator.start(1112)]);
+                return Promise.all([mockServer.start(), responseGenerator.start()]);
             });
         });
         afterAll(() => {
@@ -154,11 +156,11 @@ WeM2k.mock()\n\
         let requestBuilder: rb.RequestBuilder;
         let mockServer: Server;
 
-        beforeAll((): Promise<void> => {
+        beforeAll((): Promise<void | http.Server> => {
             return makeTempJSFile('\
 WeM2k.mock()\n\
      .get("/route1")\n\
-     .reply(200, "This is the new body")\n').then((fileName: string): Promise<void> => {
+     .reply(200, "This is the new body")\n').then((fileName: string): Promise<http.Server> => {
                 config = new MockConfig({
                     port: '8004',
                     serverConfig: fileName,
@@ -166,6 +168,10 @@ WeM2k.mock()\n\
                 requestBuilder = new rb.RequestBuilder(config);
                 mockServer = new Server(config);
                 return mockServer.start();
+            }).then((server: http.Server) => {
+                return server;
+	    }, (err: any) => {
+		fail(`An unexpected error occured ${err}`)
             });
         });
         afterAll(() => {
@@ -178,10 +184,12 @@ WeM2k.mock()\n\
                 expect(response.body).toEqual('This is the new body');
             });
         });
-        test('it crashes and request times out for un-mocked calls', () => {
-            return requestBuilder.request('get', '/unMocked').catch((err: any) => {
-                expect(err.message).toEqual('ESOCKETTIMEDOUT');
-                expect(err.code).toEqual('ESOCKETTIMEDOUT');
+        test('and the call is un-mocked, it replies with an error explaining what needs to be matched', () => {
+            return requestBuilder.request('get', '/unMocked').then((response: rb.RBResponse) => {
+                expect(response.response.statusCode).toEqual(501);
+                expect(response.body).toMatch(/misconfigured.*No match.*unMocked/s);
+            }, (_: any) => {
+                fail('The request should not have returned an error.');
             });
         });
     });

@@ -1,3 +1,11 @@
+/**
+ * This module controls how we use [nock](http://github.com/nock/nock) and defines methods that are
+ * made available to the `serverConfig` file.
+ */
+
+ /**
+  * Imports
+  */
 import * as jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
@@ -6,7 +14,7 @@ import request from 'request';
  * This function is used to modify the nock.Interceptor object. I was unable to figure out a way to
  * get at the Interceptor definition so I am grabbing the prototype off of a temporary interceptor.
 */
-function adulterateNock() {
+(function adulterateNock() {
     const tempInterceptor: nock.Interceptor = nock('wem2k.com').get('/');
     const interceptorProto = Object.getPrototypeOf(tempInterceptor);
     nock.removeInterceptor(tempInterceptor);
@@ -32,15 +40,22 @@ function adulterateNock() {
             });
         };
     }
-}
+})();
 
-adulterateNock();
-
+/**
+ * The WeM2k class controls how the server handles mocking and sets up methods that can be used in
+ * the `serverConfig` file.
+ */
 class WeM2k {
-    public currentRequest: any;
-    public responseGenerator: string;
-    public enableNetConnect: boolean;
+    private responseGenerator: string;
+    private enableNetConnect: boolean;
 
+    /**
+     * @param responseGenerator The URI to the response generator.
+     * @param enableNetConnect This controls how the server handles un-mocked calls. If it is set to
+     * true the server will forward un-mocked calls to the responseGenerator. If it is set to false
+     * the server will reply with an error for un-mocked calls.
+     */
     constructor(responseGenerator: string, enableNetConnect: boolean) {
         this.responseGenerator = responseGenerator;
         this.enableNetConnect = enableNetConnect;

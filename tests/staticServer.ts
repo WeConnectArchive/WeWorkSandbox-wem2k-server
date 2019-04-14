@@ -1,32 +1,58 @@
 import express from 'express';
 import http from 'http';
+import * as cb from '../lib/callbacks';
 
+/**
+ * This class lets you construct a server with static responses.
+ */
 class StaticServer {
-    private app: express.Express;
     private server: http.Server;
+    private port: number;
 
-    constructor(config: (app: express.Express) => void ) {
-        this.app = express();
-        config(this.app);
-        this.server = http.createServer(this.app);
+    /**
+     * Initialize the static server. See the express documentation for more information.
+     * @param port 
+     * @param config Configure the server with a callback that accepts an express app.
+     * #### Example Configuration
+     * ```typescript 
+     * let server = new StaticServer(1234, (app: express.Express) => {
+     *     app.get('/route1', (_: express.Request, res: express.Response) => {
+     *         res.status(200).send('Some static test');
+     *     });
+     * });
+     * ```
+     */
+    constructor(port: number, config: (app: express.Express) => void ) {
+        const app = express();
+        config(app);
+        this.server = http.createServer(app);
+        this.port = port;
     }
-    public start(port: number): Promise<void> {
-        return new Promise((resolve: any, reject: any) => {
+
+    /**
+     * Start the server.
+     * @returns The http.Server as a Promise.
+     */
+    public start(): Promise<http.Server> {
+        return new Promise((resolve: cb.Callback<http.Server>, reject: cb.ErrorCallback) => {
             this.server.on('listening', () => {
-                resolve();
+                resolve(this.server);
             });
             this.server.on('error', reject);
-            this.server.listen(port);
+            this.server.listen(this.port);
         });
     }
-    public stop(): Promise<void> {
-        const self = this;
-        return new Promise((resolve, reject) => {
-            self.server.close((err?: Error) => {
+    /**
+     * Stop the server.
+     * @returns The http.Server as a Promise.
+     */
+    public stop(): Promise<http.Server> {
+        return new Promise((resolve: cb.Callback<http.Server>, reject: cb.ErrorCallback) => {
+            this.server.close((err?: Error) => {
                 if (err) {
                     return reject(err);
                 }
-                return resolve();
+                return resolve(this.server);
             });
         });
     }
