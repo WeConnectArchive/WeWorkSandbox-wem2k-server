@@ -1,5 +1,5 @@
 /**
- * The modules contains callbacks that we use across the server code
+ * This module contains callbacks that we use across the server code.
  */
 
 /**

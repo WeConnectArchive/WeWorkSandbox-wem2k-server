@@ -12,7 +12,7 @@ import * as cb from './callbacks';
 import WeM2k from './wem2k';
 
 /**
- * Sever is the mocking server. It loads the user supplied `serverConfig` file and can mock REST
+ * Server is the mocking server. It loads the user supplied `serverConfig` file and can mock REST
  * calls sent to it.
  */
 class Server {
@@ -23,9 +23,9 @@ class Server {
      * Process the configuration and set up the mocking server.
      * @param configuration The configuration for the server can have three optional values, `port`,
      * `responseGenerator`, and `serverConfig`. The behavior of the server is undefined if both
-     * `responseGenerator`, and `serverConfig` are not set:
+     * `responseGenerator` and `serverConfig` are not set:
      * * `port` _(default: '8000')_: The port that the server listens to.
-     * * `responseGenerator` _(optional)_: The default response generator url. If no
+     * * `responseGenerator` _(optional)_: The default response generator URL. If no
      *   response generator is passed the server will require all calls to be explicitly mocked. If
      *   `responseGenerator` is not set and the server receives an un-mocked call it will crash.
      * * `serverConfig` _(optional)_: The path to the mocking config file. If this is not passed the

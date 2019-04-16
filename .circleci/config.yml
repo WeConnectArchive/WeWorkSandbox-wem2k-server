@@ -15,7 +15,7 @@ jobs:
       - restore_cache:
           key: wem2k-npm-{{ checksum "package.json" }}
       - run:
-          name: Install dependencies
+          name: Install node dependencies
           command: npm install
       - save_cache:
           key: wem2k-npm-{{ checksum "package.json" }}
@@ -33,7 +33,7 @@ jobs:
       - restore_cache:
           key: wem2k-npm-{{ checksum "package.json" }}
       - run:
-          name: Install dependencies
+          name: Install node dependencies
           command: npm install
       - save_cache:
           key: wem2k-npm-{{ checksum "package.json" }}

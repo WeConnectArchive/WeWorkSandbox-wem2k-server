@@ -1,6 +1,6 @@
 /**
- * This module controls how we use [nock](http://github.com/nock/nock) and defines methods that are
- * made available to the `serverConfig` file.
+ * This module controls how we use [nock](http://github.com/nock/nock) and defines the methods that
+ * are made available to the `serverConfig` file.
  */
 
 /**

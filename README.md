@@ -20,9 +20,8 @@ expects.
 The second configuration file is the mock configuration file. This file is written in JS and you
 can use [nock](http://www.github.com/nock/nock) syntax to control what is mocked out. We have made
 a few modifications to make it easy for you.
-1. We introduced a Global function that sets the defaults you will use for all your mock
-configuration in this file. Simply call `WeM2k.mock()` instead of `nock` directly for setting up
-the mock.
+1. We introduced a Global function that sets the defaults you will need for defining your mocks.
+   Simply call `WeM2k.mock()` instead of `nock` directly for setting up a mock.
 1. We have added a new type of reply method to `nock` called `replyWithDefault`. This method
 enables _partial_ mocking of responses that start with the default body.
 

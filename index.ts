@@ -1,5 +1,6 @@
 /**
- * This is the entry point to the server. It simply loads the config and starts the mocking server.
+ * This is the entry point to the server. It simply loads the server settings and starts the mocking
+ * server.
  */
 
 /**

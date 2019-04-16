@@ -8,7 +8,7 @@ export interface RBResponse {
 }
 
 /**
- * This is a test utility to build request as promises against localhost.
+ * This is a test utility to build requests as Promises against localhost.
  */
 export class RequestBuilder {
     private baseURI: string;
@@ -20,9 +20,9 @@ export class RequestBuilder {
     }
 
     /**
-     * Contruct a request against localhost.
+     * Construct a request against localhost.
      * @param httpMethod
-     * @param path The uri path.
+     * @param path The URI path.
      * @returns The [[RBResponse]] as a Promise.
      */
     public request(httpMethod: string, path: string): Promise<RBResponse> {
