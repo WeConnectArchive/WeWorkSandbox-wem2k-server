@@ -8,8 +8,8 @@ Server settings are controlled by config/default.json. There are three values th
 expects.
 
 * `responseGenerator`: This is the URL of a server which can generate default responses for the
-     server that WeM2K Server is mocking out. If a reponse genertor is not provided the server will
-     not permit any unmocked calls.
+     server that WeM2K Server is mocking out. If a response generator is not
+     provided the server will not permit any unmocked calls.
 * `serverConfig`: This is the path to a file which configures how the server controls responses.
      This file uses [nock](http://www.github.com/nock/nock) syntax to control how the WeM2K server
      responds with two modifications which we will explain below.

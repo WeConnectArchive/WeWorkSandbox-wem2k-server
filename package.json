@@ -1,5 +1,5 @@
 {
-  "name": "wem2k-sever",
+  "name": "wem2k-server",
   "version": "0.1.0",
   "description": "A tiny proxy server that can mock the response for some requests",
   "main": "index.js",
