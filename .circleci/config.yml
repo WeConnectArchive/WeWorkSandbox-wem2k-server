@@ -71,6 +71,10 @@ jobs:
       - run: |
           git clone git@github.com:WeConnect/testinfra-docs.git docs-repo
           mv dist/docs docs-repo/html/wem2k-server
+          cd docs-repo
+          git add .
+          git commit -m "Automatic doc update from wem2k-server"
+          git push origin master
   push:
     docker:
       - image: circleci/buildpack-deps
