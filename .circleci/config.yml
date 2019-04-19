@@ -12,21 +12,43 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - restore_cache:
+          key: wem2k-npm-{{ checksum "package.json" }}
       - run:
-          name: mkdir
-          command: |
-            mkdir -p temp/lint-results/lint
+          name: Install node dependencies
+          command: npm install
+      - save_cache:
+          key: wem2k-npm-{{ checksum "package.json" }}
+          paths:
+            - node_modules
       - run:
-          name: Install Linter
-          command: |
-            npm install tslint typescript
-      - run:
-          name: Run Linter
-          command: |
-            npm run lint-ci
+          name: Run linter
+          command: npm run lint-ci
       - store_artifacts:
-          path: temp/lint-results
-          destination: artifacts
+          path: reports
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: wem2k-npm-{{ checksum "package.json" }}
+      - run:
+          name: Install node dependencies
+          command: npm install
+      - save_cache:
+          key: wem2k-npm-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Run build
+          command: npm run build
+      - run:
+          name: Run tests
+          command: npm run test
+          environment: 
+            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+      - store_test_results:
+          path: reports
 
   push:
     docker:
@@ -47,10 +69,13 @@ workflows:
     jobs:
       - lint:
           context: org-global
+      - test:
+          context: org-global
       - push:
           context: org-global
           requires:
             - lint
+            - test
           filters:
             branches:
               only: master
