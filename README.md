@@ -30,7 +30,6 @@ responses.
 #### Example 2: Use All Hard Coded Responses
 When the server has a `serverConfig` but no `responseGenerator` the server will fail for any
 unmocked calls.
-responses.
 ```json
 {
     "serverConfig": "./hardCodedResponses.js"
