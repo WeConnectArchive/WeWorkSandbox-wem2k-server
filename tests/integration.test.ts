@@ -50,7 +50,8 @@ function makeTempJSFile(text: string, options: any = {}): Promise<string> {
 
 function cleanupTempFiles(): Promise<temp.Stats> {
     return new Promise((resolve, reject) => {
-        tempFile.cleanup((err: any, stats: temp.Stats) => {
+        // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/34874
+        (tempFile as any).cleanup((err: any, stats: temp.Stats) => {
             if (err) {
                 reject(err);
             }

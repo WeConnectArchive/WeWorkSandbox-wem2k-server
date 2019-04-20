@@ -12,9 +12,40 @@ expects.
      provided the server will not permit any unmocked calls.
 * `serverConfig`: This is the path to a file which configures how the server controls responses.
      This file uses [nock](http://www.github.com/nock/nock) syntax to control how the WeM2K server
-     responds with two modifications which we will explain below.
-* `port`: This is the port that the server will start at. If it is not provided it will default to 
+     responds with two modifications which we will explain below. Relative paths are assumed to be
+     relative from the current working directory of the node server, this is usually the root of the
+     the repository.
+* `port`: This is the port that the server will start at. If it is not provided it will default to
      port 8000.
+
+#### Example 1: Use All Default Responses
+When the server has a `responseGenerator` but no `serverConfig` the server will use all default
+responses.
+```json
+{
+    "responseGenerator": "http://localhost:8484"
+}
+```
+
+#### Example 2: Use All Hard Coded Responses
+When the server has a `serverConfig` but no `responseGenerator` the server will fail for any
+unmocked calls.
+responses.
+```json
+{
+    "serverConfig": "./hardCodedResponses.js"
+}
+```
+
+#### Example 3: Enable Partially Mocked Responses
+When the server has both a `serverConfig` setting and a `responseGenerator` setting then you can use
+partially mocked responses with the `replyWithDefault` method explained below.
+```json
+{
+    "serverConfig": "./hardCodedResponses.js",
+    "responseGenerator": "http://localhost:8484"
+}
+```
 
 ### Server Configuration File
 The second configuration file is the mock configuration file. This file is written in JS and you
@@ -43,15 +74,15 @@ WeM2k.mock()
      .get('/my/route')
      .replyWithDefault(200, (body) => {
        body.key1 = 'new val'
-     }) 
+     })
 ```
 
 #### Example 3: Dynamic Mock
 ```
 userTable = {
-	'email1@wework.com': '22323234'
-	'email2@wework.com': '22323235'
-	'email3@wework.com': '22323236'
+    'email1@wework.com': '22323234'
+    'email2@wework.com': '22323235'
+    'email3@wework.com': '22323236'
 }
 
 WeM2k.mock()
@@ -61,3 +92,11 @@ WeM2k.mock()
       return userTable[requestBody.email];
     })
 ```
+
+## Advanced Usage
+
+For more advanced usage take a look at the modules we use in the server.
+* We use the [config](https://github.com/lorenwest/node-config) module to read the server settings
+  file.
+* We use the [debug](https://github.com/visionmedia/debug) module for debug messages.
+* We use [nock](https://github.com/nock/nock) to control mocks.

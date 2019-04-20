@@ -11,7 +11,7 @@ WeM2k.mock()
   .reply(200, function (requestBody) {
     let uuid = this.req.euuid;
     console.log("uuid: "+ uuid);
-//    WeM2k.makeJWT(uuid)
+    WeM2k.makeJWT(uuid)
   });
 
 const dt = new Date();
