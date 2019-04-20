@@ -44,7 +44,9 @@ class Server {
             global.WeM2k = new WeM2k(responseGeneratorUrl, false);
         }
         if (this.config.has('serverConfig')) {
-            require(this.config.get('serverConfig'));
+            const currentDir: string = process.cwd();
+            const configFileName: string = this.config.get('serverConfig');
+            require(require.resolve(configFileName, { paths: [currentDir] }));
         }
         const proxyApp = httpProxy.createProxyServer({
             changeOrigin: true,
