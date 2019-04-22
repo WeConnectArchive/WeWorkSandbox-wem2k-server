@@ -193,7 +193,7 @@ WeM2k.mock()\n\
             }).then((server: http.Server) => {
                 return Promise.all([server.close(), cleanupTempFiles()]);
             }, (err: any) => {
-                fail(`The server failed to start do to ${err}`);
+                fail(`The server failed to start due to ${err}`);
             });
         });
     });
