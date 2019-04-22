@@ -73,6 +73,8 @@ jobs:
           mv dist/docs docs-repo/html/wem2k-server
           cd docs-repo
           git add .
+          git config user.email "testinfra@wework.com"
+          git config user.name "Auto Docs"
           git commit -m "Automatic doc update from wem2k-server"
           git push origin master
   push:
