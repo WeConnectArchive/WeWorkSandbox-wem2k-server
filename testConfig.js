@@ -21,17 +21,5 @@ const payload = { euuid: '2b7a2019-13c5-4337-ba60-90b6437d3920',
                   uuid: '2b7a2019-13c5-4337-ba60-90b6437d3920' };
 
 WeM2k.mock()
-  .persist()
-  .post('/api/sessions')
-  .reply(200, {
-    result: {
-      session: {
-        jwt: WeM2k.makeJWT(payload),
-        euuid: '2b7a2019-13c5-4337-ba60-90b6437d3920'
-      }
-    }
-  });
-
-WeM2k.mock()
   .get('/goodbye')
   .reply(200, 'Hello World!');

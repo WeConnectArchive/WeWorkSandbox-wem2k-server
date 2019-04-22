@@ -1,4 +1,4 @@
 {
     "port": "8000",
-    "serverConfig": "../testConfig.js"
+    "serverConfig": "./testConfig.js"
 }

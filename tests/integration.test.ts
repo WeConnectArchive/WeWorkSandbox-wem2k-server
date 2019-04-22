@@ -2,6 +2,7 @@ import { IConfig } from 'config';
 import express from 'express';
 import fs from 'fs';
 import http from 'http';
+import path from 'path';
 import temp from 'temp';
 import Server from '../lib/server';
 import MockConfig from './mock';
@@ -15,11 +16,11 @@ const tempFile: typeof temp = temp.track();
 * @param text The text to write to the file
 * @returns a Promise with the path of the file created
 */
-function makeTempJSFile(text: string): Promise<string> {
+function makeTempJSFile(text: string, options: any = {}): Promise<string> {
     return new Promise<temp.OpenFile>((resolve, reject) => {
-        tempFile.open({
-            suffix: '.js',
-        }, (err: any, info: temp.OpenFile) => {
+        options.suffix = '.js';
+        tempFile.track();
+        tempFile.open(options, (err: any, info: temp.OpenFile) => {
             if (err) {
                 return reject(err);
             }
@@ -43,6 +44,18 @@ function makeTempJSFile(text: string): Promise<string> {
                 }
                 return resolve(info.path);
             });
+        });
+    });
+}
+
+function cleanupTempFiles(): Promise<temp.Stats> {
+    return new Promise((resolve, reject) => {
+        // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/34874
+        (tempFile as any).cleanup((err: any, stats: temp.Stats) => {
+            if (err) {
+                reject(err);
+            }
+            return resolve(stats);
         });
     });
 }
@@ -72,7 +85,7 @@ describe('The WeM2k mocking server', () => {
             return Promise.all([mockServer.start(), responseGenerator.start()]);
         });
         afterAll(() => {
-            return Promise.all([mockServer.stop(), responseGenerator.stop()]);
+            return Promise.all([mockServer.stop(), responseGenerator.stop(), cleanupTempFiles()]);
         });
         test('and the route is valid, it replies with values from the response generator', () => {
             return requestBuilder.request('get', '/route1').then((response: rb.RBResponse) => {
@@ -129,7 +142,7 @@ WeM2k.mock()\n\
             });
         });
         afterAll(() => {
-            return Promise.all([mockServer.stop(), responseGenerator.stop()]);
+            return Promise.all([mockServer.stop(), responseGenerator.stop(), cleanupTempFiles()]);
         });
 
         test('it returns replies from the mock configuration file', () => {
@@ -148,6 +161,39 @@ WeM2k.mock()\n\
             return requestBuilder.request('get', '/route3').then((response: rb.RBResponse) => {
                 expect(response.response.statusCode).toEqual(200);
                 expect(response.body).toEqual('Let me in');
+            });
+        });
+    });
+    describe('when the mock config has a relative path', () => {
+        test('it loads files based off of the cwd', () => {
+            return makeTempJSFile('', { dir: process.cwd() }).then((fileName: string): Promise<http.Server> => {
+                let basePath = path.basename(fileName);
+                basePath = './' + basePath;
+                const config = new MockConfig({
+                    port: '8005',
+                    serverConfig: basePath,
+                });
+                const mockServer = new Server(config);
+                return mockServer.start();
+            }).then((server: http.Server) => {
+                return Promise.all([server.close(), cleanupTempFiles()]);
+            }, (err: any) => {
+                fail(`The server failed to start do to ${err}`);
+            });
+        });
+        test('it can load modules in the cwd', () => {
+            return makeTempJSFile('', { dir: process.cwd() }).then((fileName: string): Promise<http.Server> => {
+                const modPath = path.basename(fileName).split('.js')[0];
+                const config = new MockConfig({
+                    port: '8005',
+                    serverConfig: modPath,
+                });
+                const mockServer = new Server(config);
+                return mockServer.start();
+            }).then((server: http.Server) => {
+                return Promise.all([server.close(), cleanupTempFiles()]);
+            }, (err: any) => {
+                fail(`The server failed to start due to ${err}`);
             });
         });
     });
@@ -170,12 +216,12 @@ WeM2k.mock()\n\
                 return mockServer.start();
             }).then((server: http.Server) => {
                 return server;
-	    }, (err: any) => {
-		fail(`An unexpected error occured ${err}`)
+        }, (err: any) => {
+                fail(`An unexpected error occurred ${err}`);
             });
         });
         afterAll(() => {
-            return mockServer.stop();
+            return Promise.all([mockServer.stop(), cleanupTempFiles()]);
         });
 
         test('it works for mocked calls', () => {
