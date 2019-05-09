@@ -1,4 +1,9 @@
-FROM node:8
+FROM node:10
+
+RUN set -ex; \
+    apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+    rsync
 
 WORKDIR /app
 

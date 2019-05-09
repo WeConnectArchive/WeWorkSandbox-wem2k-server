@@ -70,7 +70,7 @@ jobs:
             - "35:0d:54:b0:a4:3a:33:ac:40:88:a3:be:a4:09:bc:c2" 
       - run: |
           git clone git@github.com:WeConnect/testinfra-docs.git docs-repo
-          mv dist/docs docs-repo/html/wem2k-server
+          rsync -vai dist/docs/ docs-repo/html/wem2k-server/
           cd docs-repo
           git add .
           git config user.email "testinfra@wework.com"
@@ -109,8 +109,7 @@ workflows:
       - docs:
           context: org-global
           requires:
-            - lint
-            - test
+            - push
           filters:
             branches:
               only: master
