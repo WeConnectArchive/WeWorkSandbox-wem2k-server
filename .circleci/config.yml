@@ -109,8 +109,7 @@ workflows:
       - docs:
           context: org-global
           requires:
-            - lint
-            - test
+            - push
           filters:
             branches:
               only: master
