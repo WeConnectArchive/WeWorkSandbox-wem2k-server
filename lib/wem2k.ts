@@ -19,7 +19,7 @@ import request from 'request';
     const interceptorProto = Object.getPrototypeOf(tempInterceptor);
     nock.removeInterceptor(tempInterceptor);
     if (!interceptorProto.replyWithDefault) {
-        interceptorProto.replyWithDefault =  function(responseCode: number, modifyBody: (body: any) => any) {
+        interceptorProto.replyWithDefault = function (responseCode: number, modifyBody: (body: any) => any) {
             const interceptor: nock.Interceptor = this;
             // TODO: Will work when fixed https://jira.we.co/browse/TI-406
             // interceptor.reply(...).matchHeader('nock-setting', val => val === undefined);
@@ -65,7 +65,7 @@ class WeM2k {
      * @param options
      * @returns scope
      */
-    public mock(options: nock.Options = {allowUnmocked: this.enableNetConnect}): nock.Scope {
+    public mock(options: nock.Options = { allowUnmocked: this.enableNetConnect }): nock.Scope {
         const scope = nock(this.responseGenerator, options);
         return scope;
     }
@@ -77,8 +77,43 @@ class WeM2k {
      * @returns an encoded JWT
      */
     public makeJWT(payload: object): string {
-      const encodedJWT = jwt.encode(payload, process.env.WE_AUTH_PRIVATE_KEY, 'RS256');
-      return encodedJWT;
+        const encodedJWT = jwt.encode(payload, process.env.WE_AUTH_PRIVATE_KEY, 'RS256');
+        return encodedJWT;
+    }
+
+    /**
+     * This function is used to create a token transform for authentication.
+     * @param payload
+     * @returns A JSON packet with `principal uuid` `action token` `euuid` `JWT` `should update client`
+     */
+    public principleUUID(payload: object): string {
+        const jwtToken = this.makeJWT(payload);
+        const principleUUID = this.encodeUUID(this.getLocalUUIDFromSUT());
+        const updateClient = true;
+        const eUUID = this.getEUUID();
+        const actionToken = this.getActionToken();
+        return `{"principalUuid":${principleUUID},"actionToken":${actionToken},`
+            + `"euuid":${eUUID},"jwt":${jwtToken},"shouldUpdateClient":${updateClient}}`;
+    }
+
+    private getLocalUUIDFromSUT(): string {
+        throw Error('getLocalUUIDFromSUT Method requires implementation');
+    }
+
+    private encodeUUID(uuid: string, encodeFrom: BufferEncoding = 'utf8', encodeTo: string = 'base64'): Uint8Array {
+        const uuidBuffer = Buffer.from(uuid, encodeFrom);
+        const uuidEncoded = Buffer.from(uuidBuffer.toString(encodeTo));
+        return uuidEncoded;
+    }
+
+    private getEUUID(): string {
+        // Real values are not required at this time and may never be required. Passing a garbage value for now.
+        return '123e4567-e89b-12d3-a456-426655440000';
+    }
+
+    private getActionToken(): string {
+        // Real values are not required at this time and may never be required. Passing a garbage value for now.
+        return '123e4567-e89b-12d3-a456-426655440000';
     }
 }
 
