@@ -20,7 +20,7 @@ import encodeUUID from './wem2kmethods';
     const interceptorProto = Object.getPrototypeOf(tempInterceptor);
     nock.removeInterceptor(tempInterceptor);
     if (!interceptorProto.replyWithDefault) {
-        interceptorProto.replyWithDefault = function (responseCode: number, modifyBody: (body: any) => any) {
+        interceptorProto.replyWithDefault = function(responseCode: number, modifyBody: (body: any) => any) {
             const interceptor: nock.Interceptor = this;
             // TODO: Will work when fixed https://jira.we.co/browse/TI-406
             // interceptor.reply(...).matchHeader('nock-setting', val => val === undefined);
