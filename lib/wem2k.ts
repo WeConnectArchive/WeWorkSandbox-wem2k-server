@@ -9,6 +9,7 @@
 import * as jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
+import encodeUUID from './wem2kmethods';
 
 /**
  * This function is used to modify the nock.Interceptor object. I was unable to figure out a way to
@@ -86,34 +87,12 @@ class WeM2k {
      * @param payload
      * @returns A JSON packet with `principal uuid` `action token` `euuid` `JWT` `should update client`
      */
-    public principleUUID(payload: object): string {
-        const jwtToken = this.makeJWT(payload);
-        const principleUUID = this.encodeUUID(this.getLocalUUIDFromSUT());
-        const updateClient = true;
-        const eUUID = this.getEUUID();
-        const actionToken = this.getActionToken();
-        return `{"principalUuid":${principleUUID},"actionToken":${actionToken},`
-            + `"euuid":${eUUID},"jwt":${jwtToken},"shouldUpdateClient":${updateClient}}`;
+    public principleUUID(uuid: string): string {
+        const principleUUID = this.encodeUUID(uuid);
+        return principleUUID;
     }
-
-    private getLocalUUIDFromSUT(): string {
-        throw Error('getLocalUUIDFromSUT Method requires implementation');
-    }
-
-    private encodeUUID(uuid: string, encodeFrom: BufferEncoding = 'utf8', encodeTo: string = 'base64'): Uint8Array {
-        const uuidBuffer = Buffer.from(uuid, encodeFrom);
-        const uuidEncoded = Buffer.from(uuidBuffer.toString(encodeTo));
-        return uuidEncoded;
-    }
-
-    private getEUUID(): string {
-        // Real values are not required at this time and may never be required. Passing a garbage value for now.
-        return '123e4567-e89b-12d3-a456-426655440000';
-    }
-
-    private getActionToken(): string {
-        // Real values are not required at this time and may never be required. Passing a garbage value for now.
-        return '123e4567-e89b-12d3-a456-426655440000';
+    private encodeUUID(uuid: string, encodeFrom: BufferEncoding = 'utf8', encodeTo: string = 'base64'): string {
+        return encodeUUID(uuid, encodeFrom, encodeTo);
     }
 }
 
