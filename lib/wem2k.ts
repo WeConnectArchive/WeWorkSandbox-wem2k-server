@@ -9,7 +9,7 @@
 import * as jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
-import encodeUUID from './wem2kmethods';
+import { encodeUUID, transformUUIDToRaw } from './wem2kmethods';
 
 /**
  * This function is used to modify the nock.Interceptor object. I was unable to figure out a way to
@@ -84,12 +84,18 @@ class WeM2k {
 
     /**
      * This function is used to create a token transform for authentication.
-     * @param payload
-     * @returns A JSON packet with `principal uuid` `action token` `euuid` `JWT` `should update client`
+     * @param uuid Pretty UUID or raw UUID excepted
+     * @returns base64 encoded raw UUID, or empty string for invalid inputs.
      */
     public principleUUID(uuid: string): string {
-        const principleUUID = this.encodeUUID(uuid);
-        return principleUUID;
+        const rawUUID = this.transformUUIDToRaw(uuid);
+        if (!rawUUID) {
+            return '';
+        }
+        return this.encodeUUID(rawUUID);
+    }
+    private transformUUIDToRaw(uuid: string): string {
+        return transformUUIDToRaw(uuid);
     }
     private encodeUUID(uuid: string, encodeFrom: BufferEncoding = 'utf8', encodeTo: string = 'base64'): string {
         return encodeUUID(uuid, encodeFrom, encodeTo);
