@@ -30,6 +30,12 @@ describe('Test WeM2K supporting Methods', () => {
 
         });
     });
+    describe('Test transformUUIDToRaw for invalid inputs', () => {
+        it('Given an empty string should return empty string');
+        it('Given improper characters should return empty string');
+        it('Given too many characters should return empty string');
+        it('Given too few characters shoukd return empty string');
+    });
 
 });
 
