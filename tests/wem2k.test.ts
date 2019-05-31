@@ -30,6 +30,12 @@ describe('Test WeM2K supporting Methods', () => {
 
         });
     });
+
+    describe('Verify UUID that are already raw', () => {
+        it('Given a raw UUID, Verify the same raw UUID is returned', () => {});
+        it('Raw formatted UUID is should have a character count of 32', () => {});
+    });
+
     describe('Test transformUUIDToRaw for invalid inputs', () => {
         it('Given an empty string, should return empty string', () => {
             expect(transformUUIDToRaw('')).toStrictEqual('');
