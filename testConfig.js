@@ -14,6 +14,18 @@ WeM2k.mock()
     WeM2k.makeJWT(uuid)
   });
 
+  WeM2k.mock()
+    .persist()
+    .post('/v1/action')
+    .reply(200, {
+        principal_uuid: WeM2k.principleUUID('2b7a2019-13c5-4337-ba60-90b6437d3920'),
+        actionToken: "sdfjmksdfs",
+        euuid: "sdfsdfsk",
+        jwt: "sdfsdfsdfw",
+        shouldUpdateClient: true
+
+    });
+
 const dt = new Date();
 const exp = dt.getTime() + dt.getMonth() + 1;
 const payload = { euuid: '2b7a2019-13c5-4337-ba60-90b6437d3920',
