@@ -24,13 +24,12 @@ describe('Test WeM2K supporting Methods', () => {
         });
 
         it('Contains only lowercase alphanumeric characters', () => {
-            const pattern = new RegExp('$[a-z0-9]^');
-            const isAPass = pattern.test('abcdefghijkln123456');
+            const pattern = new RegExp('^[a-z0-9]+$');
+            const isAPass = pattern.test(rawuuid);
             expect(isAPass).toBeTruthy();
 
         });
     });
-
 
 });
 
