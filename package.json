@@ -11,7 +11,8 @@
     "lint-ci": "npm run lint -- --format junit --out reports/lint/lint.xml",
     "server": "node dist/index.js",
     "start": "npm run server",
-    "test": "jest"
+    "test": "jest",
+    "watch": "tsc --noEmit -p . && jest --watchAll"
   },
   "repository": {
     "type": "git",
