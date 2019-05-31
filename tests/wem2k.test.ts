@@ -31,10 +31,18 @@ describe('Test WeM2K supporting Methods', () => {
         });
     });
     describe('Test transformUUIDToRaw for invalid inputs', () => {
-        it('Given an empty string should return empty string');
-        it('Given improper characters should return empty string');
-        it('Given too many characters should return empty string');
-        it('Given too few characters shoukd return empty string');
+        it('Given an empty string, should return empty string', () => {
+            expect(transformUUIDToRaw('')).toStrictEqual('');
+        });
+        it('Given improper characters, should return empty string', () => {
+            expect(transformUUIDToRaw(' áñúó´p;-!@#$-%^&*-()+=-0987654321qw')).toStrictEqual('');
+        });
+        it('Given too many characters, should return empty string', () => {
+            expect(transformUUIDToRaw('00000000-0000-0000-0000-0000000000001')).toStrictEqual('');
+        });
+        it('Given too few characters, should return empty string', () => {
+            expect(transformUUIDToRaw('00000000-0000-0000-0000-00000000000')).toStrictEqual('');
+        });
     });
 
 });
