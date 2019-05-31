@@ -1,8 +1,25 @@
-export function encodeUUID(uuid: string, encodeFrom: BufferEncoding = 'utf8', encodeTo: string = 'base64'): string {
+
+/**
+ * 
+ * @param uuid Pass a clean UUID here
+ * @param encodeFrom Possible values are (defualt: utf8) "ascii" | "utf8" | "utf-8" 
+ * | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex"
+ * @param encodeTo Possible values are (default: base64) "ascii" | "utf8" | "utf-8" 
+ * | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex"
+ */
+export function encodeUUID(uuid: string,
+                           encodeFrom: BufferEncoding = 'utf8',
+                           encodeTo: BufferEncoding = 'base64',
+                           ): string {
     const uuidBuffer = Buffer.from(uuid, encodeFrom);
     return uuidBuffer.toString(encodeTo);
 }
 
+/**
+ * This funciton is used to cleanup incoming UUID's and leave only the 32 characters
+ * @param uuid Pass in a UUID with dashes, ie a pretty UUID
+ * @returns A cleaned up UUID with just the necessary 32 characters.
+ */
 export function transformUUIDToRaw(uuid: string): string {
     const patterns = [
         {
@@ -15,6 +32,7 @@ export function transformUUIDToRaw(uuid: string): string {
         },
     ];
     let rawuuid = '';
+
     for (let i = 0; i < patterns.length && !rawuuid; i++) {
         const pattern = patterns[i].pattern;
         if (pattern.test(uuid)) {

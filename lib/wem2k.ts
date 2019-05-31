@@ -88,17 +88,11 @@ class WeM2k {
      * @returns base64 encoded raw UUID, or empty string for invalid inputs.
      */
     public principleUUID(uuid: string): string {
-        const rawUUID = this.transformUUIDToRaw(uuid);
+        const rawUUID = transformUUIDToRaw(uuid);
         if (!rawUUID) {
             return '';
         }
-        return this.encodeUUID(rawUUID);
-    }
-    private transformUUIDToRaw(uuid: string): string {
-        return transformUUIDToRaw(uuid);
-    }
-    private encodeUUID(uuid: string, encodeFrom: BufferEncoding = 'utf8', encodeTo: string = 'base64'): string {
-        return encodeUUID(uuid, encodeFrom, encodeTo);
+        return encodeUUID(rawUUID);
     }
 }
 
