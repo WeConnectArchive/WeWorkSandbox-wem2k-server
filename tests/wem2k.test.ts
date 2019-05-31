@@ -32,8 +32,14 @@ describe('Test WeM2K supporting Methods', () => {
     });
 
     describe('Verify UUID that are already raw', () => {
-        it('Given a raw UUID, Verify the same raw UUID is returned', () => {});
-        it('Raw formatted UUID is should have a character count of 32', () => {});
+        const rawtestuuid = '2b7a201913c54337ba6090b6437d3920';
+        const resultuuid = transformUUIDToRaw(rawtestuuid);
+        it('Given a raw UUID, Verify the same raw UUID is returned', () => {
+            expect(resultuuid).toStrictEqual(rawtestuuid);
+        });
+        it('Raw formatted UUID is should have a character count of 32', () => {
+            expect(resultuuid).toHaveLength(32);
+        });
     });
 
     describe('Test transformUUIDToRaw for invalid inputs', () => {
@@ -52,5 +58,3 @@ describe('Test WeM2K supporting Methods', () => {
     });
 
 });
-
-// 2b7a2019-13c5-4337-ba60-90b6437d3920
