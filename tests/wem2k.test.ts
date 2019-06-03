@@ -1,7 +1,6 @@
 import { encodeUUID, transformUUIDToRaw } from '../lib/wem2kmethods';
 
 describe('Test WeM2K supporting Methods', () => {
-    //const uuidFormat = new RegExp('([a-fA-F0-9]{8}-(?:[a-fA-F0-9]{4}-){3}[a-fA-F0-9]{12}){1}');
     describe('Properly encodes a UUID and returns a base64 encoded string', () => {
         const uuid = '2b7a201913c54337ba6090b6437d3920';
         const encodeduuid = encodeUUID(uuid);
