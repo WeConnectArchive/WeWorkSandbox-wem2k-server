@@ -2,9 +2,9 @@
 /**
  * This function will return an encoded UUID string
  * @param uuid Pass a clean UUID with only the 32 alphanumeric characters
- * @param encodeFrom Possible values are (defualt: utf8) "ascii" | "utf8" | "utf-8" 
+ * @param encodeFrom Possible values are (defualt: utf8) "ascii" | "utf8" | "utf-8"
  * | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex"
- * @param encodeTo Possible values are (default: base64) "ascii" | "utf8" | "utf-8" 
+ * @param encodeTo Possible values are (default: base64) "ascii" | "utf8" | "utf-8"
  * | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex"
  */
 export function encodeUUID(uuid: string,
@@ -23,7 +23,7 @@ export function encodeUUID(uuid: string,
 export function transformUUIDToRaw(uuid: string): string {
     const contexts = [
         {
-            action: (u: string, _p: RegExp): string => u,
+            action: (u: string): string => u,
             pattern:/^[a-z0-9]{32}$/,
         },
         {
