@@ -1,3 +1,5 @@
+export type RawUUID = string;
+
 /**
  * This function will return an encoded UUID string
  * @param uuid Pass a clean UUID with only the 32 alphanumeric characters
@@ -19,7 +21,7 @@ export function encodeUUID(uuid: string,
  * @param uuid Pass in a UUID with dashes, ie a pretty UUID
  * @returns A cleaned up UUID with just the necessary 32 characters.
  */
-export function createRawUUIDFrom(uuid: string): string {
+export function createRawUUIDFrom(uuid: string): RawUUID {
     const contexts = [
         {
             action: (u: string, p: RegExp): string => u.replace(p, '$1'),
@@ -31,7 +33,7 @@ export function createRawUUIDFrom(uuid: string): string {
         },
     ];
 
-    let rawuuid = '';
+    let rawuuid: RawUUID = '';
 
     for (let i = 0; i < contexts.length && !rawuuid; i++) {
         const pattern = contexts[i].pattern;
