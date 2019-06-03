@@ -1,4 +1,3 @@
-
 /**
  * This function will return an encoded UUID string
  * @param uuid Pass a clean UUID with only the 32 alphanumeric characters
@@ -10,7 +9,7 @@
 export function encodeUUID(uuid: string,
                            encodeFrom: BufferEncoding = 'utf8',
                            encodeTo: BufferEncoding = 'base64',
-                           ): string {
+): string {
     const uuidBuffer = Buffer.from(uuid, encodeFrom);
     return uuidBuffer.toString(encodeTo);
 }
@@ -20,15 +19,15 @@ export function encodeUUID(uuid: string,
  * @param uuid Pass in a UUID with dashes, ie a pretty UUID
  * @returns A cleaned up UUID with just the necessary 32 characters.
  */
-export function transformUUIDToRaw(uuid: string): string {
+export function createRawUUIDFrom(uuid: string): string {
     const contexts = [
         {
-            action: (u: string): string => u,
-            pattern:/^[a-z0-9]{32}$/,
+            action: (u: string, p: RegExp): string => u.replace(p, '$1'),
+            pattern: /^[ \t]*([a-z0-9]{32})[ \t]*$/,
         },
         {
             action: (u: string, p: RegExp): string => u.replace(p, '$1$2$3$4$5'),
-            pattern:/^([a-z0-9]{8})-([a-z0-9]{4})-([a-z0-9]{4})-([a-z0-9]{4})-([a-z0-9]{12})$/,
+            pattern: /^[ \t]*([a-z0-9]{8})-([a-z0-9]{4})-([a-z0-9]{4})-([a-z0-9]{4})-([a-z0-9]{12})[\t ]*$/,
         },
     ];
 
@@ -37,7 +36,7 @@ export function transformUUIDToRaw(uuid: string): string {
     for (let i = 0; i < contexts.length && !rawuuid; i++) {
         const pattern = contexts[i].pattern;
         if (pattern.test(uuid)) {
-            rawuuid = contexts[i].action(uuid,pattern);
+            rawuuid = contexts[i].action(uuid, pattern);
         }
     }
 
