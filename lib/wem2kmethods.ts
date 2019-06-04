@@ -21,7 +21,7 @@ export function encodeUUID(uuid: string,
  * @param uuid Pass in a UUID with dashes, ie a pretty UUID
  * @returns A cleaned up UUID with just the necessary 32 characters.
  */
-export function createRawUUIDFrom(uuid: string): RawUUID {
+export function createRawUUID(uuid: string): RawUUID {
     const contexts = [
         {
             action: (u: string, p: RegExp): string => u.replace(p, '$1'),
