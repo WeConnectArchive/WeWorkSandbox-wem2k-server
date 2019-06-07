@@ -1,3 +1,4 @@
+
 export type RawUUID = string;
 
 /**
@@ -22,25 +23,6 @@ export function encodeUUID(uuid: string,
  * @returns A cleaned up UUID with just the necessary 32 characters.
  */
 export function createRawUUID(uuid: string): RawUUID {
-    const contexts = [
-        {
-            action: (u: string, p: RegExp): string => u.replace(p, '$1'),
-            pattern: /^[ \t]*([a-z0-9]{32})[ \t]*$/,
-        },
-        {
-            action: (u: string, p: RegExp): string => u.replace(p, '$1$2$3$4$5'),
-            pattern: /^[ \t]*([a-z0-9]{8})-([a-z0-9]{4})-([a-z0-9]{4})-([a-z0-9]{4})-([a-z0-9]{12})[\t ]*$/,
-        },
-    ];
-
-    let rawuuid: RawUUID = '';
-
-    for (let i = 0; i < contexts.length && !rawuuid; i++) {
-        const pattern = contexts[i].pattern;
-        if (pattern.test(uuid)) {
-            rawuuid = contexts[i].action(uuid, pattern);
-        }
-    }
-
-    return rawuuid;
+    const rawuuid: RawUUID = uuid.replace(/[\s-]*/g, '');
+    return !/^[a-f0-9]{32}$/.test(rawuuid) ? '' : rawuuid;
 }

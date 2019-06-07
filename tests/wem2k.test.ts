@@ -1,6 +1,8 @@
 import { createRawUUID, encodeUUID } from '../lib/UUIDUtils';
 
 describe('Test WeM2K supporting Methods', () => {
+    const prettyuuid = '2b7a2019-13c5-4337-ba60-90b6437d3920';
+    const rawtestuuid = '2b7a201913c54337ba6090b6437d3920';
     describe('Properly encodes a UUID and returns a base64 encoded string', () => {
         const uuid = '2b7a201913c54337ba6090b6437d3920';
         const encodeduuid = encodeUUID(uuid);
@@ -15,7 +17,6 @@ describe('Test WeM2K supporting Methods', () => {
     });
 
     describe('Verify proper formation of UUID before encode', () => {
-        const prettyuuid = '2b7a2019-13c5-4337-ba60-90b6437d3920';
         const rawuuid = createRawUUID(prettyuuid);
 
         it('Has a count of 32', () => {
@@ -31,7 +32,7 @@ describe('Test WeM2K supporting Methods', () => {
     });
 
     describe('Verify UUID that are already raw', () => {
-        const rawtestuuid = '2b7a201913c54337ba6090b6437d3920';
+
         const resultuuid = createRawUUID(rawtestuuid);
         it('Given a raw UUID, Verify the same raw UUID is returned', () => {
             expect(resultuuid).toStrictEqual(rawtestuuid);
