@@ -90,10 +90,8 @@ class WeM2k {
      */
     public principleUUID(uuid: string): string {
         const rawUUID = createRawUUID(uuid);
-        if (!rawUUID) {
-            return '';
-        }
-        return encodeUUID(rawUUID);
+
+        return !rawUUID ? '' : encodeUUID(rawUUID);
     }
 }
 
