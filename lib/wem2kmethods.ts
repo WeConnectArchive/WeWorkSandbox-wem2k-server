@@ -18,7 +18,7 @@ export function encodeUUID(uuid: string,
 
 /**
  * This funciton is used to cleanup incoming UUID's and leave only the 32 alphanumeric characters
- * @param uuid Pass in a UUID with dashes, ie a pretty UUID
+ * @param uuid in any format
  * @returns A cleaned up UUID with just the necessary 32 characters.
  */
 export function createRawUUID(uuid: string): RawUUID {

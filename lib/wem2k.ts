@@ -84,8 +84,7 @@ class WeM2k {
 
     /**
      * This function is used to create a token transform for authentication.
-     * @param uuid Pretty UUID (2b7a2019-13c5-4337-ba60-90b6437d3920)
-     *              or raw UUID (2b7a201913c54337ba6090b6437d3920) excepted
+     * @param uuid in any format
      * @returns base64 encoded raw UUID, or empty string for invalid inputs.
      */
     public principleUUID(uuid: string): string {
