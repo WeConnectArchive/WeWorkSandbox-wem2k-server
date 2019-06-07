@@ -1,4 +1,4 @@
-import { createRawUUID, encodeUUID } from '../lib/wem2kmethods';
+import { createRawUUID, encodeUUID } from '../lib/UUIDUtils';
 
 describe('Test WeM2K supporting Methods', () => {
     describe('Properly encodes a UUID and returns a base64 encoded string', () => {

@@ -9,7 +9,7 @@
 import * as jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
-import { createRawUUID, encodeUUID } from './wem2kmethods';
+import { createRawUUID, encodeUUID } from './UUIDUtils';
 
 /**
  * This function is used to modify the nock.Interceptor object. I was unable to figure out a way to
