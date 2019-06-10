@@ -1,4 +1,6 @@
 
+const debug = require('debug')('UUIDUTils');
+
 export type RawUUID = string;
 
 /**
@@ -23,6 +25,10 @@ export function encodeUUID(uuid: string,
  * @returns A cleaned up UUID with just the necessary 32 characters.
  */
 export function createRawUUID(uuid: string): RawUUID {
-    const rawuuid: RawUUID = uuid.replace(/[\s-]*/gmi, '');
-    return /^[a-f0-9]{32}$/.test(rawuuid) ? rawuuid : '';
+    let rawuuid: RawUUID = uuid.replace(/[\s-]*/gmi, '');
+    if (!/^[a-f0-9]{32}$/.test(rawuuid)) {
+        rawuuid = '';
+        debug(`Invalid UUID provided : ${uuid}`);
+    }
+    return rawuuid;
 }

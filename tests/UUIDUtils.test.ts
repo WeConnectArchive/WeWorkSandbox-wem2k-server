@@ -1,6 +1,6 @@
 import { createRawUUID, encodeUUID } from '../lib/UUIDUtils';
 
-describe('Test WeM2K supporting Methods', () => {
+describe('Test UUIDUtils Methods', () => {
     const prettyuuid = '2b7a2019-13c5-4337-ba60-90b6437d3920';
     const rawtestuuid = '2b7a201913c54337ba6090b6437d3920';
     describe('Properly encodes a UUID and returns a base64 encoded string', () => {
@@ -42,18 +42,21 @@ describe('Test WeM2K supporting Methods', () => {
         });
     });
 
-    describe('Test transformUUIDToRaw for invalid inputs', () => {
+    describe('Test createRawUUID for invalid inputs', () => {
         it('Given an empty string, should return empty string', () => {
             expect(createRawUUID('')).toStrictEqual('');
         });
         it('Given improper characters, should return empty string', () => {
-            expect(createRawUUID(' áñúó´p;-!@#$-%^&*-()+=-0987654321qw')).toStrictEqual('');
+            expect(createRawUUID(' áñúó´p;-!@#$-%^&*-()+=-0987654321qw'))
+            .toStrictEqual('');
         });
         it('Given too many characters, should return empty string', () => {
-            expect(createRawUUID('00000000-0000-0000-0000-0000000000001')).toStrictEqual('');
+            expect(createRawUUID('00000000-0000-0000-0000-0000000000001'))
+            .toStrictEqual('');
         });
         it('Given too few characters, should return empty string', () => {
-            expect(createRawUUID('00000000-0000-0000-0000-00000000000')).toStrictEqual('');
+            expect(createRawUUID('00000000-0000-0000-0000-00000000000'))
+            .toStrictEqual('');
         });
         it('Given extra whitespace on the edges', () => {
             expect(createRawUUID(' 00000000-0000-0000-0000-000000000000 '))
@@ -63,6 +66,7 @@ describe('Test WeM2K supporting Methods', () => {
             expect(createRawUUID('\t00000000-0000-0000-0000-000000000000\t'))
             .toStrictEqual('00000000000000000000000000000000');
         });
+
     });
 
 });
