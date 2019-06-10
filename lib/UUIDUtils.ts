@@ -25,8 +25,8 @@ export function encodeUUID(uuid: string,
  * @returns A cleaned up UUID with just the necessary 32 characters.
  */
 export function createRawUUID(uuid: string): RawUUID {
-    let rawuuid: RawUUID = uuid.replace(/[\s-]*/gmi, '');
-    if (!/^[a-f0-9]{32}$/.test(rawuuid)) {
+    let rawuuid: RawUUID = uuid.replace(/[\s-]*/gi, '');
+    if (!/^[a-f0-9]{32}$/gi.test(rawuuid)) {
         rawuuid = '';
         debug(`Invalid UUID provided : ${uuid}`);
     }
