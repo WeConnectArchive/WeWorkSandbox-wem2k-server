@@ -4,23 +4,23 @@ describe('WeM2k Tests', () => {
   let wem2ktest: WeM2k;
   const uuid = '2b7a2019-13c5-4337-ba60-90b6437d3920';
   const rawUUID = uuid.replace('-','');
-  describe('principleUUID', () => {
+  describe('principalUUID', () => {
     beforeEach(() => {
       wem2ktest = new WeM2k('http://example.com',false);
     });
 
     it('encodes uuid', () => {
-      const principleuuid = wem2ktest.principleUUID(uuid);
-      expect(principleuuid).toStrictEqual('MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=');
+      const principaluuid = wem2ktest.principalUUID(uuid);
+      expect(principaluuid).toStrictEqual('MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=');
     });
 
     it('encodes raw uuid', () => {
-      const principleuuid = wem2ktest.principleUUID(rawUUID);
-      expect(principleuuid).toStrictEqual('MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=');
+      const principaluuid = wem2ktest.principalUUID(rawUUID);
+      expect(principaluuid).toStrictEqual('MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=');
     });
 
     it('encoded uuid and encoded raw uuid are equal', () => {
-      expect(wem2ktest.principleUUID(uuid)).toStrictEqual(wem2ktest.principleUUID(rawUUID));
+      expect(wem2ktest.principalUUID(uuid)).toStrictEqual(wem2ktest.principalUUID(rawUUID));
     });
   });
 });

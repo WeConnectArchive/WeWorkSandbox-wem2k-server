@@ -87,7 +87,7 @@ class WeM2k {
      * @param uuid in any format
      * @returns base64 encoded raw UUID, or empty string for invalid inputs.
      */
-    public principleUUID(uuid: string): string {
+    public principalUUID(uuid: string): string {
         const rawUUID = sanitizeUUID(uuid);
         return !rawUUID ? '' : encodeUUID(rawUUID);
     }
