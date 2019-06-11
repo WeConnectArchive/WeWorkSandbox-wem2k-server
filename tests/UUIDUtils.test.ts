@@ -31,7 +31,7 @@ describe('Test UUIDUtils Methods', () => {
             validateParameterMatch(actualRawUUID,'2B7A201913c54337ba6090b6437d3920');
         });
 
-        it('Invalid inputs return empty string', () => {
+        it('returns an empty string when the input is not a UUID', () => {
             const expectedEmptyString = '';
             validateParameterMatch(UUID.sanitizeUUID(''),expectedEmptyString);
             validateParameterMatch(UUID.sanitizeUUID(' áñúó´p;-!@#$-%^&*-()+=-0987654321qw'),expectedEmptyString);
