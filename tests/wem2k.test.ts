@@ -11,16 +11,16 @@ describe('WeM2k Tests', () => {
 
     it('encodes uuid', () => {
       const principaluuid = wem2ktest.principalUUID(uuid);
-      expect(principaluuid).toStrictEqual('MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=');
+      expect(principaluuid).toEqual('MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=');
     });
 
     it('encodes raw uuid', () => {
       const principaluuid = wem2ktest.principalUUID(rawUUID);
-      expect(principaluuid).toStrictEqual('MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=');
+      expect(principaluuid).toEqual('MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=');
     });
 
     it('encoded uuid and encoded raw uuid are equal', () => {
-      expect(wem2ktest.principalUUID(uuid)).toStrictEqual(wem2ktest.principalUUID(rawUUID));
+      expect(wem2ktest.principalUUID(uuid)).toEqual(wem2ktest.principalUUID(rawUUID));
     });
   });
 });
