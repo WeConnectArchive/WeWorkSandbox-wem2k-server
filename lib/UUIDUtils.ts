@@ -2,6 +2,7 @@
 const debug = require('debug')('UUIDUTils');
 
 export type RawUUID = string;
+export type EncodedUUID = string;
 
 /**
  * This function will return an encoded UUID string
@@ -14,7 +15,7 @@ export type RawUUID = string;
 export function encodeUUID(uuid: string,
                            encodeFrom: BufferEncoding = 'utf8',
                            encodeTo: BufferEncoding = 'base64',
-): string {
+                            ): EncodedUUID {
     const uuidBuffer = Buffer.from(uuid, encodeFrom);
     return uuidBuffer.toString(encodeTo);
 }
