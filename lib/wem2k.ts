@@ -9,7 +9,7 @@
 import * as jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
-import { encodeUUID, sanitizeUUID } from './UUIDUtils';
+import * as UUID from './UUIDUtils';
 
 /**
  * This function is used to modify the nock.Interceptor object. I was unable to figure out a way to
@@ -88,8 +88,8 @@ class WeM2k {
      * @returns base64 encoded raw UUID, or empty string for invalid inputs.
      */
     public principalUUID(uuid: string): string {
-        const rawUUID = sanitizeUUID(uuid);
-        return !rawUUID ? '' : encodeUUID(rawUUID);
+        const rawUUID = UUID.sanitizeUUID(uuid);
+        return !rawUUID ? '' : UUID.encodeUUID(rawUUID);
     }
 }
 
