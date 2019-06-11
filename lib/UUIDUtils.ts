@@ -23,7 +23,7 @@ export function encodeUUID(uuid: string,
 /**
  * This funciton is used to cleanup incoming UUID's and leave only the 32 alphanumeric characters
  * @param uuid in any format
- * @returns A cleaned up UUID with just the necessary 32 characters.
+ * @returns A cleaned up UUID with just the necessary 32 characters, or the empty string if the string is not a UUID.
  */
 export function sanitizeUUID(uuid: string): RawUUID {
     let rawuuid: RawUUID = uuid.replace(/[\s-]*/gi, '');
