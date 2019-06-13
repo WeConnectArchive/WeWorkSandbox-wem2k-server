@@ -4,7 +4,7 @@ class MockConfig implements IConfig {
     public util: IUtil;
     private dict: object;
     constructor(dict: object) {
-        this.util = {} as IUtil
+        this.util = {} as IUtil;
         this.dict = dict;
     }
     public get<T>(setting: string): T {

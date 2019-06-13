@@ -18,12 +18,8 @@ describe('Test UUIDUtils Methods', () => {
             const actualRawUUID = UUID.sanitizeUUID(rawTestUUID);
             validateParameterMatch(actualRawUUID,rawTestUUID);
         });
-        it('handles extra spaces', () => {
-            const actualRawUUID = UUID.sanitizeUUID(' ' + prettyUUID + '  ');
-            validateParameterMatch(actualRawUUID,rawTestUUID);
-        });
-        it('handles tabbed spaces', () => {
-            const actualRawUUID = UUID.sanitizeUUID('\t\t' + prettyUUID + '\t');
+        it('trims whitespace', () => {
+            const actualRawUUID = UUID.sanitizeUUID('\t' + prettyUUID + '  ');
             validateParameterMatch(actualRawUUID,rawTestUUID);
         });
         it('matches UUID case insensitive', () => {
@@ -32,19 +28,21 @@ describe('Test UUIDUtils Methods', () => {
         });
 
         it('returns an empty string when the input is not a UUID', () => {
-            const expectedEmptyString = '';
-            validateParameterMatch(UUID.sanitizeUUID(''),expectedEmptyString);
-            validateParameterMatch(UUID.sanitizeUUID(' áñúó´p;-!@#$-%^&*-()+=-0987654321qw'),expectedEmptyString);
-            validateParameterMatch(UUID.sanitizeUUID('00000000-0000-0000-0000-0000000000001'),expectedEmptyString);
-            validateParameterMatch(UUID.sanitizeUUID('00000000-0000-0000-0000-00000000000'),expectedEmptyString);
+            const emptyString = '';
+            validateParameterMatch(UUID.sanitizeUUID(''),emptyString);
+            validateParameterMatch(UUID.sanitizeUUID(' áñúó´p;-!@#$-%^&*-()+=-0987654321qw'),emptyString);
+            validateParameterMatch(UUID.sanitizeUUID('00000000-0000-0000-0000-0000000000001'),emptyString);
+            validateParameterMatch(UUID.sanitizeUUID('00000000-0000-0000-0000-00000000000'),emptyString);
         });
     });
 
     describe('encodeUUID', () => {
         it('encodes a raw uuid to base64 encoding', () => {
             const actualEncodedUUID = UUID.encodeUUID(rawTestUUID);
-            const expectedEncodedValue = 'MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=';
+            const expectedEncodedValue = 'K3ogGRPFQze6YJC2Q305IA==';
             validateParameterMatch(actualEncodedUUID, expectedEncodedValue);
         });
+
+
     });
 });

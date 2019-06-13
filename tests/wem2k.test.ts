@@ -11,12 +11,12 @@ describe('WeM2k Tests', () => {
 
     it('encodes uuid', () => {
       const principaluuid = wem2ktest.principalUUID(uuid);
-      expect(principaluuid).toEqual('MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=');
+      expect(principaluuid).toEqual('K3ogGRPFQze6YJC2Q305IA==');
     });
 
     it('encodes raw uuid', () => {
       const principaluuid = wem2ktest.principalUUID(rawUUID);
-      expect(principaluuid).toEqual('MmI3YTIwMTkxM2M1NDMzN2JhNjA5MGI2NDM3ZDM5MjA=');
+      expect(principaluuid).toEqual('K3ogGRPFQze6YJC2Q305IA==');
     });
 
     it('compares encoded uuid and encoded raw uuid are equal', () => {
