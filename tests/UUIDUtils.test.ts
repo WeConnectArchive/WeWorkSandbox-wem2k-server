@@ -23,11 +23,10 @@ describe('Test UUIDUtils Methods', () => {
         });
 
         it('returns an empty string when the input is not a UUID', () => {
-            const emptyString = '';
-            expect(UUID.sanitizeUUID('')).toEqual(emptyString);
-            expect(UUID.sanitizeUUID(' áñúó´p;-!@#$-%^&*-()+=-0987654321qw')).toEqual(emptyString);
-            expect(UUID.sanitizeUUID('00000000-0000-0000-0000-0000000000001')).toEqual(emptyString);
-            expect(UUID.sanitizeUUID('00000000-0000-0000-0000-00000000000')).toEqual(emptyString);
+            expect(UUID.sanitizeUUID('')).toEqual('');
+            expect(UUID.sanitizeUUID(' áñúó´p;-!@#$-%^&*-()+=-0987654321qw')).toEqual('');
+            expect(UUID.sanitizeUUID('00000000-0000-0000-0000-0000000000001')).toEqual('');
+            expect(UUID.sanitizeUUID('00000000-0000-0000-0000-00000000000')).toEqual('');
         });
     });
 
@@ -37,7 +36,6 @@ describe('Test UUIDUtils Methods', () => {
             const expectedEncodedValue = 'K3ogGRPFQze6YJC2Q305IA==';
             expect(actualEncodedUUID).toEqual(expectedEncodedValue);
         });
-
 
     });
 });
