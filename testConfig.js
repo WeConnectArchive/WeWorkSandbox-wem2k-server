@@ -18,7 +18,7 @@ WeM2k.mock()
     .persist()
     .post('/v1/action')
     .reply(200, {
-        principal_uuid: WeM2k.principalUUID('2b7a2019-13c5-4337-ba60-90b6437d3920'),
+        principal_uuid: WeM2k.networkEncodeUUID('2b7a2019-13c5-4337-ba60-90b6437d3920'),
         actionToken: "",
         euuid: "",
         jwt: "",
