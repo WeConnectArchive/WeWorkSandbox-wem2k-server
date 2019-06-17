@@ -1,7 +1,7 @@
 {
   "defaultSeverity": "error",
   "extends": [
-    "tslint:recommended"
+    "tslint:Recommended"
   ],
   "jsRules": {},
   "rules": {
@@ -10,7 +10,8 @@
     "interface-name" : [true, "never-prefix"],
     "no-console": true,
     "no-var-keyword": true,
-    "no-var-requires": false
+    "no-var-requires": false,
+    "semicolon": [true, "always"]
   },
   "rulesDirectory": []
 }
