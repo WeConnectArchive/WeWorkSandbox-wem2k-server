@@ -274,9 +274,12 @@ WeM2k.mock()\n\
 
             //Add new mocks
             const wem2ktest = new WeM2k('http://example.com',false);
-            const req = '{"path": "/api","method": "get","status":' +
-                ' 200,"response": "response from newly added mock"}';
-            wem2ktest.addMocks(JSON.parse(req));
+            const req = {path: "/api",
+                method: "get",
+                status: 200,
+                response: "response from newly added mock"
+            };
+            wem2ktest.addMocks(req);
             console.log(nock.pendingMocks())
             expect(nock.pendingMocks().length).toEqual(2);
 

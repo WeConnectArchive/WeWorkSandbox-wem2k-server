@@ -18,7 +18,6 @@ import * as UUID from './UUIDUtils';
 (function adulterateNock() {
     const tempInterceptor: nock.Interceptor = nock('wem2k.com').get('/');
     const interceptorProto = Object.getPrototypeOf(tempInterceptor);
-
     nock.removeInterceptor(tempInterceptor);
     if (!interceptorProto.replyWithDefault) {
         interceptorProto.replyWithDefault = function(responseCode: number, modifyBody: (body: any) => any) {
