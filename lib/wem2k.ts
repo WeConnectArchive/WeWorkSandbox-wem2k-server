@@ -7,7 +7,7 @@
  * Imports
  */
 import * as jwt from 'jwt-simple';
-import nock from 'nock';
+import nock, {NockDefinition} from 'nock';
 import request from 'request';
 import * as UUID from './UUIDUtils';
 
@@ -18,6 +18,7 @@ import * as UUID from './UUIDUtils';
 (function adulterateNock() {
     const tempInterceptor: nock.Interceptor = nock('wem2k.com').get('/');
     const interceptorProto = Object.getPrototypeOf(tempInterceptor);
+
     nock.removeInterceptor(tempInterceptor);
     if (!interceptorProto.replyWithDefault) {
         interceptorProto.replyWithDefault = function(responseCode: number, modifyBody: (body: any) => any) {
@@ -90,6 +91,23 @@ class WeM2k {
     public networkEncodeUUID(uuid: string): string {
         const rawUUID = UUID.sanitizeUUID(uuid);
         return !rawUUID ? '' : UUID.encodeUUID(rawUUID);
+    }
+
+    /**
+     * This function is used to add mocks.
+     * @param req in JSON format
+     */
+    public addMocks(req:any) {
+        let nockDef : NockDefinition = {
+            scope: this.responseGenerator,
+            method: req.method,
+            path: req.path,
+            status: req.status,
+            response: req.response,
+            options: req.options,
+            port: req.port
+        };
+        nock.define([nockDef])
     }
 }
 
