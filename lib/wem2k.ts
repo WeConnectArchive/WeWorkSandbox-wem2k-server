@@ -7,7 +7,7 @@
  * Imports
  */
 import * as jwt from 'jwt-simple';
-import nock, {NockDefinition} from 'nock';
+import nock, { NockDefinition } from 'nock';
 import request from 'request';
 import * as UUID from './UUIDUtils';
 
@@ -96,17 +96,17 @@ class WeM2k {
      * This function is used to add mocks.
      * @param req in JSON format
      */
-    public addMocks(req:any) {
-        let nockDef : NockDefinition = {
-            scope: this.responseGenerator,
+    public addMocks(req: any) {
+        const nockDef: NockDefinition = {
             method: req.method,
-            path: req.path,
-            status: req.status,
-            response: req.response,
             options: req.options,
-            port: req.port
+            path: req.path,
+            port: req.port,
+            response: req.response,
+            scope: this.responseGenerator,
+            status: req.status,
         };
-        nock.define([nockDef])
+        nock.define([nockDef]);
     }
 }
 
