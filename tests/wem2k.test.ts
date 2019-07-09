@@ -3,10 +3,10 @@ import WeM2k from '../lib/wem2k';
 describe('WeM2k Tests', () => {
   let wem2ktest: WeM2k;
   const uuid = '2b7a2019-13c5-4337-ba60-90b6437d3920';
-  const rawUUID = uuid.replace('-','');
+  const rawUUID = uuid.replace('-', '');
   describe('networkEncodeUUID', () => {
     beforeEach(() => {
-      wem2ktest = new WeM2k('http://example.com',false);
+      wem2ktest = new WeM2k('http://example.com', false);
     });
 
     it('encodes uuid', () => {

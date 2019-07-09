@@ -5,11 +5,10 @@ import http from 'http';
 import path from 'path';
 import temp from 'temp';
 import Server from '../lib/server';
+import WeM2k from '../lib/wem2k';
 import MockConfig from './mock';
 import * as rb from './requestBuilder';
 import StaticServer from './staticServer';
-import WeM2k from "../lib/wem2k";
-import nock from 'nock';
 
 const tempFile: typeof temp = temp.track();
 
@@ -165,6 +164,23 @@ WeM2k.mock()\n\
                 expect(response.body).toEqual('Let me in');
             });
         });
+        test('it returns replies from mocks added on the fly', () => {
+            // Add new mocks
+            const wem2ktest = new WeM2k('http://localhost:1112', true);
+            const mockDef = {
+                method: 'get',
+                path: '/api',
+                response: 'response from newly added mock',
+                status: 200,
+            };
+            wem2ktest.addMock(mockDef);
+
+            // make call to newly added mock endpoint
+            return requestBuilder.request('get', '/api').then((response: rb.RBResponse) => {
+                expect(response.response.statusCode).toEqual(200);
+                expect(response.body).toEqual('response from newly added mock');
+            });
+        });
     });
     describe('when the mock config has a relative path', () => {
         test('it loads files based off of the cwd', () => {
@@ -240,54 +256,71 @@ WeM2k.mock()\n\
                 fail('The request should not have returned an error.');
             });
         });
-    });
-    describe('when mocks are added on the fly', () => {
-        let config: IConfig;
-        let requestBuilder: rb.RequestBuilder;
-        let mockServer: Server;
-
-        beforeAll((): Promise<void | http.Server> => {
-            return makeTempJSFile('\
-WeM2k.mock()\n\
-     .get("/route1")\n\
-     .reply(200, "This is the new body")\n').then((fileName: string): Promise<http.Server> => {
-                config = new MockConfig({
-                    port: '8005',
-                    serverConfig: fileName,
-                });
-                requestBuilder = new rb.RequestBuilder(config);
-                mockServer = new Server(config);
-                return mockServer.start();
-            }).then((server: http.Server) => {
-                return server;
-            }, (err: any) => {
-                fail(`An unexpected error occurred ${err}`);
-            });
-        });
-        afterAll(() => {
-            return Promise.all([mockServer.stop(), cleanupTempFiles()]);
-        });
-
-        test('it makes calls to newly added mocked endpoints', () => {
-            //original mock count
-            expect(nock.pendingMocks().length).toEqual(1);
-
-            //Add new mocks
-            const wem2ktest = new WeM2k('http://example.com',false);
-            const req = {path: "/api",
-                method: "get",
+        test('it returns replies from mocks added on the fly', () => {
+            // Add new mocks
+            const wem2ktest = new WeM2k('http://example.com', false);
+            const mockDef = {
+                method: 'get',
+                path: '/api',
+                response: 'response from newly added mock',
                 status: 200,
-                response: "response from newly added mock"
             };
-            wem2ktest.addMocks(req);
-            console.log(nock.pendingMocks())
-            expect(nock.pendingMocks().length).toEqual(2);
+            wem2ktest.addMock(mockDef);
 
-            //make call to newly added mock endpoint
+            // make call to newly added mock endpoint
             return requestBuilder.request('get', '/api').then((response: rb.RBResponse) => {
                 expect(response.response.statusCode).toEqual(200);
                 expect(response.body).toEqual('response from newly added mock');
             });
         });
     });
+//     describe('when mocks are added on the fly', () => {
+//         let config: IConfig;
+//         let requestBuilder: rb.RequestBuilder;
+//         let mockServer: Server;
+//
+//         beforeAll((): Promise<void | http.Server> => {
+//             return makeTempJSFile('\
+// WeM2k.mock()\n\
+//      .get("/route1")\n\
+//      .reply(200, "This is the new body")\n').then((fileName: string): Promise<http.Server> => {
+//                 config = new MockConfig({
+//                     port: '8005',
+//                     serverConfig: fileName,
+//                 });
+//                 requestBuilder = new rb.RequestBuilder(config);
+//                 mockServer = new Server(config);
+//                 return mockServer.start();
+        //     }).then((server: http.Server) => {
+        //         return server;
+        //     }, (err: any) => {
+        //         fail(`An unexpected error occurred ${err}`);
+        //     });
+        // });
+        // afterAll(() => {
+        //     return Promise.all([mockServer.stop(), cleanupTempFiles()]);
+        // });
+        //
+        // test('it makes calls to newly added mocked endpoints', () => {
+        //     // original mock count
+        //     expect(nock.pendingMocks().length).toEqual(1);
+        //
+        //     // Add new mocks
+        //     const wem2ktest = new WeM2k('http://example.com', false);
+        //     const mockDef = {
+    //             method: 'get',
+    //             path: '/api',
+    //             response: 'response from newly added mock',
+    //             status: 200,
+    //         };
+    //         wem2ktest.addMock(mockDef);
+    //         expect(nock.pendingMocks().length).toEqual(2);
+    //
+    //         // make call to newly added mock endpoint
+    //         return requestBuilder.request('get', '/api').then((response: rb.RBResponse) => {
+    //             expect(response.response.statusCode).toEqual(200);
+    //             expect(response.body).toEqual('response from newly added mock');
+    //         });
+    //     });
+    // });
 });

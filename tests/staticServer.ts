@@ -11,10 +11,10 @@ class StaticServer {
 
     /**
      * Initialize the static server. See the express documentation for more information.
-     * @param port 
+     * @param port
      * @param config Configure the server with a callback that accepts an express app.
      * #### Example Configuration
-     * ```typescript 
+     * ```typescript
      * let server = new StaticServer(1234, (app: express.Express) => {
      *     app.get('/route1', (_: express.Request, res: express.Response) => {
      *         res.status(200).send('Some static test');
