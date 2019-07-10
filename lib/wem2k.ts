@@ -98,15 +98,8 @@ class WeM2k {
      * @param mockDef defines the mock to be added
      */
     public addMock(mockDef: WeM2kMockDef): nock.Scope[] {
-        const def: nock.NockDefinition = {
-            method: mockDef.method,
-            path: mockDef.path,
-            port: mockDef.port,
-            response: mockDef.response,
-            scope: this.responseGenerator,
-            status: mockDef.status,
-        };
-        return nock.define([def]);
+        (mockDef as nock.NockDefinition).scope = this.responseGenerator;
+        return nock.define([mockDef as nock.NockDefinition]);
     }
 }
 

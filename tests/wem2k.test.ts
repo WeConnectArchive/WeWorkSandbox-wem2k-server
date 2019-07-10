@@ -7,6 +7,7 @@ describe('WeM2k Tests', () => {
   const uuid = '2b7a2019-13c5-4337-ba60-90b6437d3920';
   const rawUUID = uuid.replace('-', '');
   let mockDef: WeM2kMockDef;
+  const expectedResponseGenerator='http://example.com';
   describe('networkEncodeUUID', () => {
     beforeEach(() => {
       wem2ktest = new WeM2k('http://example.com', false);
@@ -28,7 +29,7 @@ describe('WeM2k Tests', () => {
   });
   describe('addMock', () => {
     beforeEach(() => {
-      wem2ktest = new WeM2k('http://example.com', false);
+      wem2ktest = new WeM2k(expectedResponseGenerator, false);
       mockDef = {
         method: 'get',
         path: '/api',
@@ -38,7 +39,7 @@ describe('WeM2k Tests', () => {
     });
 
     test('it adds a mock to the existing mocks', () => {
-      nock('http://www.example.com')
+      nock(expectedResponseGenerator)
         .get('/resource')
         .reply(200, 'domain matched');
       expect(nock.pendingMocks().length).toEqual(1);
@@ -48,7 +49,7 @@ describe('WeM2k Tests', () => {
 
     test('it sets nock uri to responseGenerator of server', () => {
       const scope = wem2ktest.addMock(mockDef);
-      expect(scope[0].pendingMocks()[0]).toContain('http://example.com');
+      expect(scope[0].pendingMocks()[0]).toContain(expectedResponseGenerator);
     });
 
     test('it throws an error when method is not set', () => {
