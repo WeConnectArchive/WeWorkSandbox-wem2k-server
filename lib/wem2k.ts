@@ -10,6 +10,7 @@ import * as jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
 import * as UUID from './UUIDUtils';
+import Wem2kMockDef from './wem2kMockDef';
 
 /**
  * This function is used to modify the nock.Interceptor object. I was unable to figure out a way to
@@ -93,7 +94,7 @@ class WeM2k {
     }
 
     /**
-     * This function is used to add mocks.
+     * This function is used to add mock.
      * @param mockDef defines the mock to be added
      */
     public addMock(mockDef: Wem2kMockDef) {
@@ -107,15 +108,6 @@ class WeM2k {
         };
         nock.define([def]);
     }
-}
-
-interface Wem2kMockDef {
-    method: string;
-    path: string;
-    port?: number | string;
-    response?: string | any;
-    status?: number;
-    body?: string | any;
 }
 
 export = WeM2k;
