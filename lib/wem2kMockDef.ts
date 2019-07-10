@@ -6,7 +6,7 @@
  * Interface that represents on the fly mock definition
  */
 
-interface Wem2kMockDef {
+interface WeM2kMockDef {
     method: string;
     path: string;
     port?: number | string;
@@ -15,4 +15,4 @@ interface Wem2kMockDef {
     body?: any;
 }
 
-export = Wem2kMockDef;
+export = WeM2kMockDef;

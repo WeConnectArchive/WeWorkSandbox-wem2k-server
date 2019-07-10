@@ -10,7 +10,7 @@ import * as jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
 import * as UUID from './UUIDUtils';
-import Wem2kMockDef from './wem2kMockDef';
+import WeM2kMockDef from './wem2kMockDef';
 
 /**
  * This function is used to modify the nock.Interceptor object. I was unable to figure out a way to
@@ -97,7 +97,7 @@ class WeM2k {
      * This function is used to add mock.
      * @param mockDef defines the mock to be added
      */
-    public addMock(mockDef: Wem2kMockDef): nock.Scope[] {
+    public addMock(mockDef: WeM2kMockDef): nock.Scope[] {
         const def: nock.NockDefinition = {
             method: mockDef.method,
             path: mockDef.path,
