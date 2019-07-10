@@ -7,7 +7,7 @@
  */
 
 interface WeM2kMockDef {
-    method: string;
+    method?: string;
     path: string;
     port?: number | string;
     response?: any;
