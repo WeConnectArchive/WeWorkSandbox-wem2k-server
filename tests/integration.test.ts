@@ -5,7 +5,6 @@ import http from 'http';
 import path from 'path';
 import temp from 'temp';
 import Server from '../lib/server';
-import WeM2k from '../lib/wem2k';
 import MockConfig from './mock';
 import * as rb from './requestBuilder';
 import StaticServer from './staticServer';
@@ -164,23 +163,6 @@ WeM2k.mock()\n\
                 expect(response.body).toEqual('Let me in');
             });
         });
-        test('it returns replies from mocks added on the fly', () => {
-            // Add new mocks
-            const wem2ktest = new WeM2k('http://localhost:1112', true);
-            const mockDef = {
-                method: 'get',
-                path: '/api',
-                response: 'response from newly added mock',
-                status: 200,
-            };
-            wem2ktest.addMock(mockDef);
-
-            // make call to newly added mock endpoint
-            return requestBuilder.request('get', '/api').then((response: rb.RBResponse) => {
-                expect(response.response.statusCode).toEqual(200);
-                expect(response.body).toEqual('response from newly added mock');
-            });
-        });
     });
     describe('when the mock config has a relative path', () => {
         test('it loads files based off of the cwd', () => {
@@ -254,23 +236,6 @@ WeM2k.mock()\n\
                 expect(response.body).toMatch(/misconfigured.*No match.*unMocked/s);
             }, (_: any) => {
                 fail('The request should not have returned an error.');
-            });
-        });
-        test('it returns replies from mocks added on the fly', () => {
-            // Add new mocks
-            const wem2ktest = new WeM2k('http://example.com', false);
-            const mockDef = {
-                method: 'get',
-                path: '/api',
-                response: 'response from newly added mock',
-                status: 200,
-            };
-            wem2ktest.addMock(mockDef);
-
-            // make call to newly added mock endpoint
-            return requestBuilder.request('get', '/api').then((response: rb.RBResponse) => {
-                expect(response.response.statusCode).toEqual(200);
-                expect(response.body).toEqual('response from newly added mock');
             });
         });
     });

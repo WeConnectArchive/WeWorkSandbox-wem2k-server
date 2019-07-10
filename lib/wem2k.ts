@@ -97,7 +97,7 @@ class WeM2k {
      * This function is used to add mock.
      * @param mockDef defines the mock to be added
      */
-    public addMock(mockDef: Wem2kMockDef) {
+    public addMock(mockDef: Wem2kMockDef): nock.Scope[] {
         const def: nock.NockDefinition = {
             method: mockDef.method,
             path: mockDef.path,
@@ -106,7 +106,7 @@ class WeM2k {
             scope: this.responseGenerator,
             status: mockDef.status,
         };
-        nock.define([def]);
+        return nock.define([def]);
     }
 }
 
