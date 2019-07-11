@@ -48,26 +48,55 @@ import * as UUID from './UUIDUtils';
  * the `serverConfig` file.
  */
 class WeM2k {
-  private responseGenerator: string;
+  /**
+   * returns function compatible for logging wem2k formatted mocks
+   *
+   * @param outputStream stream for writing recording results
+   * @returns logging function that parses nock output and converts it WeM2k calls
+   */
+  public static createLoggerForRecording(outputStream: NodeJS.WritableStream): (_: string) => void {
+    return (content: string) => {
+      content = content.replace(/\nnock\([^)]+\)\n/, '\nWeM2k.mock().persist()\n');
+      outputStream.write(content);
+    };
+  }
+
+  /**
+   * factory method to inititalize an instance of WeM2k with record enabled
+   *
+   * @param remoteTarget URL to use as a source for recording
+   * @param outputStream stream for writing recording results
+   * @returns instance of WeM2k
+   */
+  public static createRecordInstance(remoteTarget: string, outputStream: NodeJS.WritableStream): WeM2k {
+    const instance = new WeM2k(remoteTarget, false /* can be true or false */);
+    instance.startRecording(this.createLoggerForRecording(outputStream));
+    return instance;
+  } // end static methods.
+
+  private remoteTarget: string;
   private enableNetConnect: boolean;
 
   /**
-   * @param responseGenerator The URI to the response generator.
+   * @param remoteTarget The URI to the response generator.
    * @param enableNetConnect This controls how the server handles un-mocked calls. If it is set to
    * true the server will forward un-mocked calls to the responseGenerator. If it is set to false
    * the server will reply with an error for un-mocked calls.
    */
-  constructor(responseGenerator: string, enableNetConnect: boolean) {
-    this.responseGenerator = responseGenerator;
+  constructor(remoteTarget: string, enableNetConnect: boolean) {
+    this.remoteTarget = remoteTarget;
     this.enableNetConnect = enableNetConnect;
   }
+
+  public getRemoteTarget(): string { return this.remoteTarget; }
+
   /**
    * This function is used to abstract nock from end users.
    * @param options
    * @returns scope
    */
   public mock(options: nock.Options = { allowUnmocked: this.enableNetConnect }): nock.Scope {
-    const scope = nock(this.responseGenerator, options);
+    const scope = nock(this.remoteTarget, options);
     return scope;
   }
 
@@ -91,6 +120,14 @@ class WeM2k {
         const rawUUID = UUID.sanitizeUUID(uuid);
         return !rawUUID ? '' : UUID.encodeUUID(rawUUID);
     }
+
+  private startRecording(logger: (content: string) => void): void {
+    nock.recorder.rec({
+      enable_reqheaders_recording: true,
+      logging: logger,
+      use_separator: false,
+    });
+  }
 }
 
 export = WeM2k;
