@@ -10,7 +10,6 @@ import * as jwt from 'jwt-simple';
 import nock from 'nock';
 import request from 'request';
 import * as UUID from './UUIDUtils';
-import WeM2kMockDef from './wem2kMockDef';
 
 /**
  * This function is used to modify the nock.Interceptor object. I was unable to figure out a way to
@@ -91,15 +90,6 @@ class WeM2k {
     public networkEncodeUUID(uuid: string): string {
         const rawUUID = UUID.sanitizeUUID(uuid);
         return !rawUUID ? '' : UUID.encodeUUID(rawUUID);
-    }
-
-    /**
-     * This function is used to add mock.
-     * @param mockDef defines the mock to be added
-     */
-    public addMock(mockDef: WeM2kMockDef): nock.Scope[] {
-        (mockDef as nock.NockDefinition).scope = this.responseGenerator;
-        return nock.define([mockDef as nock.NockDefinition]);
     }
 }
 

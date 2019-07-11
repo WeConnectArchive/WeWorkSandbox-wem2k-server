@@ -5,9 +5,8 @@
 /**
  * Interface that represents on the fly mock definition
  */
-
-interface WeM2kMockDef {
-    method?: string;
+type WeM2kMockDef ={
+    method: string;
     path: string;
     port?: number | string;
     response?: any;
