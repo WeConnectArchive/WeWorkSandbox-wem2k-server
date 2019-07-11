@@ -1,0 +1,5 @@
+{
+  "ignore": ["dist/*", "test/*"],
+  "ext": "ts",
+  "delay": "3"
+}
