@@ -12,7 +12,7 @@
     "debug": "DEBUG='*' npm run start",
     "dev": "nodemon --exec \"npm run build && npm start\"",
     "doc": "typedoc --out dist/docs --mode modules --exclude 'node_modules/**' .",
-    "lint": "tslint --project .",
+    "lint": "tslint --project . ; tslint tests/*.ts",
     "lint-ci": "npm run lint -- --format junit --out reports/lint/lint.xml",
     "server": "node dist/index.js",
     "start": "npm run server",
