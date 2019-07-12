@@ -25,9 +25,10 @@ export class RequestBuilder {
      * @param path The URI path.
      * @returns The [[RBResponse]] as a Promise.
      */
-    public request(httpMethod: string, path: string): Promise<RBResponse> {
+    public request(httpMethod: string, path: string, requestBody?: string): Promise<RBResponse> {
         return new Promise((resolve: cb.Callback<RBResponse>, reject: cb.ErrorCallback) => {
             request({
+                body: requestBody,
                 method: httpMethod,
                 timeout: 500,
                 uri: this.baseURI + path,
