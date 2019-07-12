@@ -16,7 +16,7 @@ class RouteHandler {
 
   /**
    * This function is used to add a mock.
-   * @param mockDef defines the mock to be added
+   * @param mockDef
    */
   public addMock(mockDef: WeM2kMockDef): nock.Scope[] {
     (mockDef as nock.NockDefinition).scope = this.responseGenerator;

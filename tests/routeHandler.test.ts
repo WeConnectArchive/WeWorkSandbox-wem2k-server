@@ -27,7 +27,7 @@ describe('RouteHandler', () => {
       expect(nock.pendingMocks().length).toEqual(2);
     });
 
-    test('it sets nock uri to responseGenerator of server', () => {
+    test('it sets nock uri', () => {
       const scope = routeHandler.addMock(mockDef);
       expect(scope[0].pendingMocks()[0]).toContain(expectedResponseGenerator);
     });
