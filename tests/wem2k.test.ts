@@ -5,18 +5,6 @@ describe('WeM2k Tests', () => {
   const uuid = '2b7a2019-13c5-4337-ba60-90b6437d3920';
   const rawUUID = uuid.replace('-', '');
 
-  describe ('createLogger', () => {
-    test('replaces nock output with WeM2K output', () => {
-      let content = '';
-      const writeFunc = (output: string) => {
-        content = output;
-      };
-      const logger = WeM2k.createLoggerForRecording({ write: writeFunc } as unknown as NodeJS.WritableStream);
-      logger('\nnock("someRandomURI",{})\n\t.someRandomMockingCall({})');
-      expect(content).toEqual('\nWeM2k.mock().persist()\n\t.someRandomMockingCall({})');
-    });
-  });
-
   describe('networkEncodeUUID', () => {
     beforeEach(() => {
       wem2ktest = new WeM2k('http://example.com', false);
