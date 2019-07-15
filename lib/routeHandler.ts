@@ -11,7 +11,7 @@ import { collectBody, writeErrorResponse } from './utilities';
 import WeM2kMockDef from './wem2kMockDef';
 
 class RouteHandler {
-  private responseGenerator: string;
+  private remoteTarget: string;
   private actions: any = {
     POST: (req: http.IncomingMessage, res: http.ServerResponse) => {
       const url = req.url.replace(/\/?(\?[^\?\/]+)?$/, '');
@@ -32,10 +32,10 @@ class RouteHandler {
   };
 
   /**
-   * @param responseGenerator The URI to the response generator.
+   * @param remoteTarget The URI to the response generator.
    */
-  constructor(responseGenerator: string) {
-    this.responseGenerator = responseGenerator;
+  constructor(remoteTarget: string) {
+    this.remoteTarget = remoteTarget;
   }
 
   /**
@@ -43,7 +43,7 @@ class RouteHandler {
    * @param mockDef
    */
   public addMock(mockDef: WeM2kMockDef): nock.Scope[] {
-    (mockDef as nock.NockDefinition).scope = this.responseGenerator;
+    (mockDef as nock.NockDefinition).scope = this.remoteTarget;
     return nock.define([mockDef as nock.NockDefinition]);
   }
 
