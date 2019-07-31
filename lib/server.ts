@@ -5,27 +5,27 @@
 /**
  * Imports
  */
-import { IConfig } from 'config';
-import fs from 'fs';
-import http from 'http';
-import httpProxy from 'http-proxy';
-import * as cb from './callbacks';
-import { initNock } from './nockHelpers';
-import RouteHandler from './routeHandler';
-import WeM2k from './wem2k';
+import { IConfig } from 'config'
+import fs from 'fs'
+import http from 'http'
+import httpProxy from 'http-proxy'
+import * as cb from './callbacks'
+import { initNock } from './nockHelpers'
+import RouteHandler from './routeHandler'
+import WeM2k from './wem2k'
 
-export const defaultResponseGeneratorUrl = 'http://example.com';
-export const defaultRecordOutputFilepath = `./tmp/record-output-${Date.now()}.js`;
+export const defaultResponseGeneratorUrl = 'http://example.com'
+export const defaultRecordOutputFilepath = `./tmp/record-output-${Date.now()}.js`
 
 /**
  * Server is the mocking server. It loads the user supplied `serverConfig` file and can mock REST
  * calls sent to it.
  */
 class Server {
-  private server: http.Server;
-  private port: number;
-  private config: IConfig;
-  private recordOutputStream: fs.WriteStream;
+  private server: http.Server
+  private port: number
+  private config: IConfig
+  private recordOutputStream: fs.WriteStream
 
   /**
    * Process the configuration and set up the mocking server.
@@ -52,44 +52,44 @@ class Server {
    *   valid when `recordTarget` is set.
    */
   constructor(configuration: IConfig) {
-    this.config = configuration;
+    this.config = configuration
     if (this.config.has('recordTarget') && this.config.has('responseGenerator')) {
-      throw Error('Cannot have both recordTarget and responseGenerator configured');
+      throw Error('Cannot have both recordTarget and responseGenerator configured')
     }
 
     const remoteTarget = this.getValueOrDefault('recordTarget', '') ||
-      this.getValueOrDefault('responseGenerator', defaultResponseGeneratorUrl);
-    this.port = +this.getValueOrDefault('port', '8000');
-    this.configureNockDependencies(remoteTarget);
-    this.initHttpServer(remoteTarget);
+      this.getValueOrDefault('responseGenerator', defaultResponseGeneratorUrl)
+    this.port = +this.getValueOrDefault('port', '8000')
+    this.configureNockDependencies(remoteTarget)
+    this.initHttpServer(remoteTarget)
   }
 
   /**
    * Asynchronously start the server.
    * @returns Promise<http.Server> The listening http.Server as a Promise.
    */
-  public start(): Promise<http.Server> {
+  start(): Promise<http.Server> {
     return new Promise<http.Server>((resolve: cb.Callback<http.Server>, reject: cb.ErrorCallback) => {
-      this.server.on('listening', () => { resolve(this.server); });
-      this.server.on('error', reject);
-      this.server.listen(this.port);
-    });
+      this.server.on('listening', () => { resolve(this.server) })
+      this.server.on('error', reject)
+      this.server.listen(this.port)
+    })
   }
 
   /**
    * Asynchronously stop the server.
    * @returns Promise<http.Server> The stopped http.Server as a Promise.
    */
-  public stop(): Promise<http.Server> {
+  stop(): Promise<http.Server> {
     return new Promise<http.Server>((resolve: cb.Callback<http.Server>, reject: cb.ErrorCallback) => {
       this.server.close((err?: Error) => {
-        if (this.recordOutputStream) { this.recordOutputStream.close(); }
+        if (this.recordOutputStream) { this.recordOutputStream.close() }
         if (err) {
-          return reject(err);
+          return reject(err)
         }
-        return resolve(this.server);
-      });
-    });
+        return resolve(this.server)
+      })
+    })
   }
 
   /**
@@ -99,18 +99,18 @@ class Server {
    */
   private configureNockDependencies(remoteTarget: string): void {
     if (this.config.has('recordTarget')) {
-      const filepath = this.getValueOrDefault('recordingFilepath', defaultRecordOutputFilepath);
-      this.recordOutputStream = fs.createWriteStream(filepath, {flags:'a'});
-      initNock(this.recordOutputStream);
-      return; // WeM2k not initialized if in record mode.
+      const filepath = this.getValueOrDefault('recordingFilepath', defaultRecordOutputFilepath)
+      this.recordOutputStream = fs.createWriteStream(filepath, {flags: 'a'})
+      initNock(this.recordOutputStream)
+      return // WeM2k not initialized if in record mode.
     }
 
-    initNock();
-    global.WeM2k = new WeM2k(remoteTarget, this.config.has('responseGenerator'));
+    initNock()
+    global.WeM2k = new WeM2k(remoteTarget, this.config.has('responseGenerator'))
     if (this.config.has('serverConfig')) {
-      const currentDir: string = process.cwd();
-      const configFileName: string = this.config.get('serverConfig');
-      require(require.resolve(configFileName, { paths: [currentDir] }));
+      const currentDir: string = process.cwd()
+      const configFileName: string = this.config.get('serverConfig')
+      require(require.resolve(configFileName, { paths: [currentDir] }))
     }
   }
 
@@ -120,26 +120,26 @@ class Server {
    * @param remoteTarget used by server to determine where to proxy requests
    */
   private initHttpServer(remoteTarget: string) {
-    const routeHandler = new RouteHandler(remoteTarget);
+    const routeHandler = new RouteHandler(remoteTarget)
     const proxyApp = httpProxy.createProxyServer({
       changeOrigin: true,
       selfHandleResponse: false,
       target: remoteTarget,
-    });
+    })
     proxyApp.on('error', (err: Error, _: http.IncomingMessage, res: http.ServerResponse) => {
       res.writeHead(501, {
         'Content-Type': 'text/plain',
-      });
-      res.end(`The server is misconfigured and you will need to mock the following call\n${err}`);
-    });
+      })
+      res.end(`The server is misconfigured and you will need to mock the following call\n${err}`)
+    })
 
     this.server = http.createServer((req, res) => {
       if (!routeHandler.isWeM2kRoute(req.url)) {
-        proxyApp.web(req, res, { target: remoteTarget });
-        return;
+        proxyApp.web(req, res, { target: remoteTarget })
+        return
       }
-      routeHandler.route(req, res);
-    });
+      routeHandler.route(req, res)
+    })
   }
 
   /**
@@ -150,10 +150,10 @@ class Server {
    */
   private getValueOrDefault(key: string, defaultValue: string): string {
     if (this.config.has(key)) {
-      return this.config.get(key);
+      return this.config.get(key)
     }
-    return defaultValue;
+    return defaultValue
   }
 }
 
-export default Server;
+export default Server

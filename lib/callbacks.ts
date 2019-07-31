@@ -5,9 +5,9 @@
 /**
  * Generic callback
  */
-export type Callback<T> = (result?: T) => void;
+export type Callback<T> = (result?: T) => void
 
 /**
  * ErrorCallback
  */
-export type ErrorCallback = Callback<Error>;
+export type ErrorCallback = Callback<Error>

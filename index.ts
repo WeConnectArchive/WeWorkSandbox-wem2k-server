@@ -6,7 +6,7 @@
 /**
  * Imports
  */
-import config from 'config';
-import Server from './lib/server';
-const mockServer = new Server(config);
-mockServer.start();
+import config from 'config'
+import Server from './lib/server'
+const mockServer = new Server(config)
+mockServer.start()
