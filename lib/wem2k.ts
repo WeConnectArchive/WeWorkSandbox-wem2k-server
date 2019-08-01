@@ -6,17 +6,17 @@
 /**
  * Imports
  */
-import * as jwt from 'jwt-simple';
-import nock from 'nock';
-import * as UUID from './UUIDUtils';
+import * as jwt from 'jwt-simple'
+import nock from 'nock'
+import * as UUID from './UUIDUtils'
 
 /**
  * The WeM2k class controls how the server handles mocking and sets up methods that can be used in
  * the `serverConfig` file.
  */
 class WeM2k {
-  private remoteTarget: string;
-  private enableNetConnect: boolean;
+  private remoteTarget: string
+  private enableNetConnect: boolean
 
   /**
    * @param remoteTarget The URI to the response generator.
@@ -25,8 +25,8 @@ class WeM2k {
    * the server will reply with an error for un-mocked calls.
    */
   constructor(remoteTarget: string, enableNetConnect: boolean) {
-    this.remoteTarget = remoteTarget;
-    this.enableNetConnect = enableNetConnect;
+    this.remoteTarget = remoteTarget
+    this.enableNetConnect = enableNetConnect
   }
 
   /**
@@ -34,9 +34,9 @@ class WeM2k {
    * @param options
    * @returns scope
    */
-  public mock(options: nock.Options = { allowUnmocked: this.enableNetConnect }): nock.Scope {
-    const scope = nock(this.remoteTarget, options);
-    return scope;
+  mock(options: nock.Options = { allowUnmocked: this.enableNetConnect }): nock.Scope {
+    const scope = nock(this.remoteTarget, options)
+    return scope
   }
 
   /**
@@ -45,9 +45,9 @@ class WeM2k {
    * @param payload
    * @returns an encoded JWT
    */
-  public makeJWT(payload: object): string {
-    const encodedJWT = jwt.encode(payload, process.env.WE_AUTH_PRIVATE_KEY, 'RS256');
-    return encodedJWT;
+  makeJWT(payload: object): string {
+    const encodedJWT = jwt.encode(payload, process.env.WE_AUTH_PRIVATE_KEY, 'RS256')
+    return encodedJWT
   }
 
   /**
@@ -55,10 +55,10 @@ class WeM2k {
    * @param uuid in any format
    * @returns base64 encoded raw UUID, or empty string for invalid inputs.
    */
-  public networkEncodeUUID(uuid: string): string {
-      const rawUUID = UUID.sanitizeUUID(uuid);
-      return !rawUUID ? '' : UUID.encodeUUID(rawUUID);
+  networkEncodeUUID(uuid: string): string {
+      const rawUUID = UUID.sanitizeUUID(uuid)
+      return !rawUUID ? '' : UUID.encodeUUID(rawUUID)
   }
 }
 
-export = WeM2k;
+export = WeM2k

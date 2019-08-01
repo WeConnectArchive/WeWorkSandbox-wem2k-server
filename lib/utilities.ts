@@ -2,7 +2,7 @@
  * This module contains methods that we use for handling http requests and responses.
  */
 
-import http from 'http';
+import http from 'http'
 
 /**
  * @param req
@@ -10,13 +10,13 @@ import http from 'http';
  * @returns void
  */
 export function collectBody(req: http.IncomingMessage, callback: any): void {
-  let body = '';
+  let body = ''
   req.on('data', (chunk) => {
-    body += chunk;
-  });
+    body += chunk
+  })
   req.on('end', () => {
-    callback(body);
-  });
+    callback(body)
+  })
 }
 
 /**
@@ -26,7 +26,7 @@ export function collectBody(req: http.IncomingMessage, callback: any): void {
  * @returns void
  */
 export function writeErrorResponse(res: http.ServerResponse, statusCode: number, message: string): void {
-  res.writeHead(statusCode);
-  res.write(JSON.stringify({ message }));
-  res.end();
+  res.writeHead(statusCode)
+  res.write(JSON.stringify({ message }))
+  res.end()
 }
