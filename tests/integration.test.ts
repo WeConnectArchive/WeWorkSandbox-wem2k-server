@@ -224,9 +224,9 @@ WeM2k.mock()\n\
         return requestBuilder.request('post',
           '/wem2k/v1/update',
           '{ "path": "/route2",\
-              "method": "get",\
-              "status": "200",\
-              "response": "response from newly added mock" }').then((response: rb.RBResponse) => {
+             "method": "get",\
+             "status": "200",\
+             "response": "response from newly added mock" }').then((response: rb.RBResponse) => {
             expect(response.response.statusCode).toEqual(204)
           }).then(() => {
             return requestBuilder.request('get', '/route2').then((response: rb.RBResponse) => {
@@ -246,9 +246,9 @@ WeM2k.mock()\n\
     test('it returns status code 422 - Unprocessable Entity for invalid mocks', () => {
       return requestBuilder.request('post',
         '/wem2k/v1/update',
-        '{  "path": "/route2",\
-            "status": "200",\
-            "response": "response from newly added mock" }').then((response: rb.RBResponse) => {
+        '{ "path": "/route2",\
+           "status": "200",\
+           "response": "response from newly added mock" }').then((response: rb.RBResponse) => {
           expect(response.response.statusCode).toEqual(422)
           expect(response.response.body).toEqual('{"message":"Could not process request. Invalid mock definition."}')
         })
