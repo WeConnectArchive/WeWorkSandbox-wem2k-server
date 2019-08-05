@@ -7,9 +7,23 @@ import {
 } from '../lib/server'
 import WeM2k from '../lib/wem2k'
 import MockConfig from './mock'
+import portfinder from 'portfinder'
+import http from 'http'
 
 jest.mock('../lib/wem2k')
 jest.mock('../lib/nockHelpers')
+
+function getFreePort(): Promise<any> {
+  return new Promise((resolve, reject) => {
+    portfinder.getPortPromise()
+      .then((port) => {
+        return resolve(port)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
 
 describe('Server Unit Tests', () => {
   describe('invalid config', () => {
@@ -57,7 +71,7 @@ describe('Server Unit Tests', () => {
         recordTarget: 'itsdefined.com',
       }))
 
-      expect(createWriteStreamMock).toBeCalledWith(defaultRecordOutputFilepath, {flags: 'a'})
+      expect(createWriteStreamMock).toBeCalledWith(defaultRecordOutputFilepath, { flags: 'a' })
       expect(initNock).toBeCalledWith(fakeOsStream)
       expect(WeM2k).not.toBeCalled()
     })
@@ -68,7 +82,7 @@ describe('Server Unit Tests', () => {
         recordTarget: 'itsdefined.com',
         recordingFilepath: filepath,
       }))
-      expect(createWriteStreamMock).toBeCalledWith(filepath, {flags: 'a'})
+      expect(createWriteStreamMock).toBeCalledWith(filepath, { flags: 'a' })
       expect(initNock).toBeCalledWith(fakeOsStream)
       expect(WeM2k).not.toBeCalled()
     })
