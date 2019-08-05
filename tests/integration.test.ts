@@ -8,6 +8,7 @@ import Server from '../lib/server'
 import MockConfig from './mock'
 import * as rb from './requestBuilder'
 import StaticServer from './staticServer'
+import portfinder from 'portfinder'
 
 const tempFile: typeof temp = temp.track()
 
@@ -60,7 +61,25 @@ function cleanupTempFiles(): Promise<temp.Stats> {
   })
 }
 
+function getFreePort(): Promise<any> {
+  return new Promise((resolve, reject) => {
+    portfinder.getPortPromise()
+      .then((port) => {
+        return resolve(port)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
 describe('The WeM2k mocking server', () => {
+  let freePort: any
+  beforeAll(async () => {
+    freePort = await getFreePort().then((freePort: any): Promise<[any]> => {
+      return freePort
+    })
+  })
   describe('when there is no mocking config', () => {
     let config: IConfig
     let requestBuilder: rb.RequestBuilder
@@ -69,7 +88,7 @@ describe('The WeM2k mocking server', () => {
 
     beforeAll((): Promise<[http.Server, http.Server]> => {
       config = new MockConfig({
-        port: '8000',
+        port: freePort,
         responseGenerator: 'http://localhost:1111',
       })
       requestBuilder = new rb.RequestBuilder(config)
@@ -86,6 +105,17 @@ describe('The WeM2k mocking server', () => {
     })
     afterAll(() => {
       return Promise.all([mockServer.stop(), responseGenerator.stop(), cleanupTempFiles()])
+    })
+    test('and the route is valid, it replies with values from the response generator', () => {
+      return requestBuilder.request('get', '/route1').then((response: rb.RBResponse) => {
+        expect(response.response.statusCode).toEqual(200)
+        expect(response.body).toEqual('Hello World!')
+      }).then(() => {
+        return requestBuilder.request('get', '/route2')
+      }).then((response: rb.RBResponse) => {
+        expect(response.response.statusCode).toEqual(201)
+        expect(response.body).toEqual('Another response')
+      })
     })
     test('and the route is valid, it replies with values from the response generator', () => {
       return requestBuilder.request('get', '/route1').then((response: rb.RBResponse) => {
@@ -118,10 +148,10 @@ WeM2k.mock()\n\
 WeM2k.mock()\n\
      .get("/route2")\n\
      .replyWithDefault(201, function (body){\n\
-         return body + " form of lion"\n\
+        return body + " form of lion"\n\
      })\n').then((fileName: string): Promise<[http.Server, http.Server]> => {
         config = new MockConfig({
-          port: '8002',
+          port: freePort,
           responseGenerator: 'http://localhost:1112',
           serverConfig: fileName,
         })
@@ -172,7 +202,7 @@ WeM2k.mock()\n\
 
     beforeAll((): Promise<[http.Server, http.Server]> => {
       config = new MockConfig({
-        port: '8003',
+        port: freePort,
         responseGenerator: 'http://localhost:1113',
       })
       requestBuilder = new rb.RequestBuilder(config)
@@ -194,9 +224,9 @@ WeM2k.mock()\n\
         return requestBuilder.request('post',
           '/wem2k/v1/update',
           '{ "path": "/route2",\
-             "method": "get",\
-             "status": "200",\
-             "response": "response from newly added mock" }').then((response: rb.RBResponse) => {
+                "method": "get",\
+                "status": "200",\
+                "response": "response from newly added mock" }').then((response: rb.RBResponse) => {
             expect(response.response.statusCode).toEqual(204)
           }).then(() => {
             return requestBuilder.request('get', '/route2').then((response: rb.RBResponse) => {
@@ -208,17 +238,17 @@ WeM2k.mock()\n\
     })
     test('it returns status code 404 - Not Found for undefined WeM2k endpoints', () => {
       return requestBuilder.request('get', '/wem2k/v1/undefined', '{}').then((response: rb.RBResponse) => {
-          expect(response.response.statusCode).toEqual(404)
-          expect(response.response.body).toEqual('{"message":\
+        expect(response.response.statusCode).toEqual(404)
+        expect(response.response.body).toEqual('{"message":\
 "GET /wem2k/v1/undefined did not match any WeM2k routes."}')
-        })
+      })
     })
     test('it returns status code 422 - Unprocessable Entity for invalid mocks', () => {
       return requestBuilder.request('post',
         '/wem2k/v1/update',
         '{ "path": "/route2",\
-           "status": "200",\
-           "response": "response from newly added mock" }').then((response: rb.RBResponse) => {
+            "status": "200",\
+            "response": "response from newly added mock" }').then((response: rb.RBResponse) => {
           expect(response.response.statusCode).toEqual(422)
           expect(response.response.body).toEqual('{"message":"Could not process request. Invalid mock definition."}')
         })
@@ -230,7 +260,7 @@ WeM2k.mock()\n\
         let basePath = path.basename(fileName)
         basePath = './' + basePath
         const config = new MockConfig({
-          port: '8005',
+          port: freePort,
           serverConfig: basePath,
         })
         const mockServer = new Server(config)
@@ -245,7 +275,7 @@ WeM2k.mock()\n\
       return makeTempJSFile('', { dir: process.cwd() }).then((fileName: string): Promise<http.Server> => {
         const modPath = path.basename(fileName).split('.js')[0]
         const config = new MockConfig({
-          port: '8005',
+          port: freePort,
           serverConfig: modPath,
         })
         const mockServer = new Server(config)
@@ -264,11 +294,11 @@ WeM2k.mock()\n\
 
     beforeAll((): Promise<void | http.Server> => {
       return makeTempJSFile('\
-WeM2k.mock()\n\
+  WeM2k.mock()\n\
      .get("/route1")\n\
      .reply(200, "This is the new body")\n').then((fileName: string): Promise<http.Server> => {
         config = new MockConfig({
-          port: '8004',
+          port: freePort,
           serverConfig: fileName,
         })
         requestBuilder = new rb.RequestBuilder(config)

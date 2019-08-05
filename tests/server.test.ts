@@ -8,7 +8,6 @@ import {
 import WeM2k from '../lib/wem2k'
 import MockConfig from './mock'
 import portfinder from 'portfinder'
-import http from 'http'
 
 jest.mock('../lib/wem2k')
 jest.mock('../lib/nockHelpers')
@@ -26,10 +25,16 @@ function getFreePort(): Promise<any> {
 }
 
 describe('Server Unit Tests', () => {
+  let freePort: any
+  beforeAll(async () => {
+    freePort = await getFreePort().then((freePort: any): Promise<[any]> => {
+      return freePort
+    })
+  })
   describe('invalid config', () => {
     test('should not accept responseGenerator and recordTarget', () => {
       const config = new MockConfig({
-        port: '8005',
+        port: freePort,
         recordTarget: 'some_other_url',
         responseGenerator: 'some_url',
       })
