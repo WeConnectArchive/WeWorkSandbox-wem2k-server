@@ -27,7 +27,7 @@ function getFreePort(): Promise<any> {
 describe('Server Unit Tests', () => {
   let freePort: any
   beforeAll(async () => {
-    freePort = await getFreePort().then((port: any): Promise<[any]> => {
+    freePort = await getFreePort().then((port): Promise<[any]> => {
       return port
     })
   })

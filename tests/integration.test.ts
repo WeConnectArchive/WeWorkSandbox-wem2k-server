@@ -76,7 +76,7 @@ function getFreePort(): Promise<any> {
 describe('The WeM2k mocking server', () => {
   let freePort: any
   beforeAll(async () => {
-    freePort = await getFreePort().then((port: any): Promise<[any]> => {
+    freePort = await getFreePort().then((port): Promise<[any]> => {
       return port
     })
   })
