@@ -3,12 +3,12 @@ import express from 'express'
 import fs from 'fs'
 import http from 'http'
 import path from 'path'
+import portfinder from 'portfinder'
 import temp from 'temp'
 import Server from '../lib/server'
 import MockConfig from './mock'
 import * as rb from './requestBuilder'
 import StaticServer from './staticServer'
-import portfinder from 'portfinder'
 
 const tempFile: typeof temp = temp.track()
 
@@ -76,8 +76,8 @@ function getFreePort(): Promise<any> {
 describe('The WeM2k mocking server', () => {
   let freePort: any
   beforeAll(async () => {
-    freePort = await getFreePort().then((freePort: any): Promise<[any]> => {
-      return freePort
+    freePort = await getFreePort().then((port: any): Promise<[any]> => {
+      return port
     })
   })
   describe('when there is no mocking config', () => {

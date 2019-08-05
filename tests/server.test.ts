@@ -1,4 +1,5 @@
 import fs from 'fs'
+import portfinder from 'portfinder'
 import { initNock } from '../lib/nockHelpers'
 import {
   default as Server,
@@ -7,7 +8,6 @@ import {
 } from '../lib/server'
 import WeM2k from '../lib/wem2k'
 import MockConfig from './mock'
-import portfinder from 'portfinder'
 
 jest.mock('../lib/wem2k')
 jest.mock('../lib/nockHelpers')
@@ -27,8 +27,8 @@ function getFreePort(): Promise<any> {
 describe('Server Unit Tests', () => {
   let freePort: any
   beforeAll(async () => {
-    freePort = await getFreePort().then((freePort: any): Promise<[any]> => {
-      return freePort
+    freePort = await getFreePort().then((port: any): Promise<[any]> => {
+      return port
     })
   })
   describe('invalid config', () => {
