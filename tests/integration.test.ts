@@ -3,12 +3,12 @@ import express from 'express'
 import fs from 'fs'
 import http from 'http'
 import path from 'path'
-import portfinder from 'portfinder'
 import temp from 'temp'
 import Server from '../lib/server'
 import MockConfig from './mock'
 import * as rb from './requestBuilder'
 import StaticServer from './staticServer'
+import GetFreePort from './testHelper'
 
 const tempFile: typeof temp = temp.track()
 
@@ -61,25 +61,11 @@ function cleanupTempFiles(): Promise<temp.Stats> {
   })
 }
 
-function getFreePort(): Promise<any> {
-  return new Promise((resolve, reject) => {
-    portfinder.getPortPromise()
-      .then((port) => {
-        return resolve(port)
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
-}
-
 describe('The WeM2k mocking server', () => {
   let freePort: any
-  beforeAll(async () => {
-    freePort = await getFreePort().then((port): Promise<[any]> => {
-      return port
-    })
-  })
+  beforeAll(async () =>
+    freePort = await GetFreePort())
+
   describe('when there is no mocking config', () => {
     let config: IConfig
     let requestBuilder: rb.RequestBuilder
@@ -105,17 +91,6 @@ describe('The WeM2k mocking server', () => {
     })
     afterAll(() => {
       return Promise.all([mockServer.stop(), responseGenerator.stop(), cleanupTempFiles()])
-    })
-    test('and the route is valid, it replies with values from the response generator', () => {
-      return requestBuilder.request('get', '/route1').then((response: rb.RBResponse) => {
-        expect(response.response.statusCode).toEqual(200)
-        expect(response.body).toEqual('Hello World!')
-      }).then(() => {
-        return requestBuilder.request('get', '/route2')
-      }).then((response: rb.RBResponse) => {
-        expect(response.response.statusCode).toEqual(201)
-        expect(response.body).toEqual('Another response')
-      })
     })
     test('and the route is valid, it replies with values from the response generator', () => {
       return requestBuilder.request('get', '/route1').then((response: rb.RBResponse) => {
