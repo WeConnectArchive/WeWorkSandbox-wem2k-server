@@ -269,7 +269,7 @@ WeM2k.mock()\n\
 
     beforeAll((): Promise<void | http.Server> => {
       return makeTempJSFile('\
-  WeM2k.mock()\n\
+WeM2k.mock()\n\
      .get("/route1")\n\
      .reply(200, "This is the new body")\n').then((fileName: string): Promise<http.Server> => {
         config = new MockConfig({
