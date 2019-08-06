@@ -7,15 +7,19 @@ import {
 } from '../lib/server'
 import WeM2k from '../lib/wem2k'
 import MockConfig from './mock'
+import GetFreePort from './testHelper'
 
 jest.mock('../lib/wem2k')
 jest.mock('../lib/nockHelpers')
 
 describe('Server Unit Tests', () => {
+  let freePort: any
+  beforeAll(async () =>
+    freePort = await GetFreePort())
   describe('invalid config', () => {
     test('should not accept responseGenerator and recordTarget', () => {
       const config = new MockConfig({
-        port: '8005',
+        port: freePort,
         recordTarget: 'some_other_url',
         responseGenerator: 'some_url',
       })
@@ -57,7 +61,7 @@ describe('Server Unit Tests', () => {
         recordTarget: 'itsdefined.com',
       }))
 
-      expect(createWriteStreamMock).toBeCalledWith(defaultRecordOutputFilepath, {flags: 'a'})
+      expect(createWriteStreamMock).toBeCalledWith(defaultRecordOutputFilepath, { flags: 'a' })
       expect(initNock).toBeCalledWith(fakeOsStream)
       expect(WeM2k).not.toBeCalled()
     })
@@ -68,7 +72,7 @@ describe('Server Unit Tests', () => {
         recordTarget: 'itsdefined.com',
         recordingFilepath: filepath,
       }))
-      expect(createWriteStreamMock).toBeCalledWith(filepath, {flags: 'a'})
+      expect(createWriteStreamMock).toBeCalledWith(filepath, { flags: 'a' })
       expect(initNock).toBeCalledWith(fakeOsStream)
       expect(WeM2k).not.toBeCalled()
     })
