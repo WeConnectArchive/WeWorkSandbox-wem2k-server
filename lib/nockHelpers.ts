@@ -64,7 +64,6 @@ export function initNock(recordOsStream?: NodeJS.WritableStream): void {
   adulterateNock()
   if (recordOsStream !== undefined) {
     nock.recorder.rec({
-      enable_reqheaders_recording: true,
       logging: createFormattedRecordModeLogger(recordOsStream),
       use_separator: false,
     })

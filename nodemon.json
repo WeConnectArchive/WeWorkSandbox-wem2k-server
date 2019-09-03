@@ -1,5 +1,5 @@
 {
-  "ignore": ["dist/*", "test/*"],
+  "ignore": ["dist/*", "test/*", "tmp/*"],
   "ext": "ts",
   "delay": "3"
 }
