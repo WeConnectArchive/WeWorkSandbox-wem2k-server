@@ -18,7 +18,11 @@ class RouteHandler {
       if (url === '/wem2k/v1/update') {
         collectBody(req, (formattedBody: string) => {
           try {
-            this.addMock(JSON.parse(formattedBody))
+            const bodyObj = JSON.parse(formattedBody)
+            if (bodyObj.body === undefined) {
+              bodyObj.body = /.*/
+            }
+            this.addMock(bodyObj)
             res.writeHead(204)
             res.end()
           } catch (e) {
