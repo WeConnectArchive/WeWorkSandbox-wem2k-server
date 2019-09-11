@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  response_generator:
+    image: stoplight/prism:3.1.0
+    volumes:
+      - "./docker-compose-examples/prism:/tmp"
+    command: mock /tmp/petstore.oas3.json --host 0.0.0.0
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: npm run server
+    stdin_open: true
+    tty: true
+    volumes:
+      - "./docker-compose-examples/wem2k-server:/app/config"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - response_generator
