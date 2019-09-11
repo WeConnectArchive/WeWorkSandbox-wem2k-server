@@ -23,7 +23,7 @@ Server settings are controlled by config/default.json. Valid configuration setti
      responds with two modifications which we will explain below. Relative paths are assumed to be
      relative from the current working directory of the node server, this is usually the root of the
      the repository.
-* `recordTarget`: This mode cannot be used in conjunction with `serverConfig` or `responseGenerator`. Record target specifies the endpoint to proxy all requests to, and will cause resulting mocks to be written out to `recordingFilepath`.
+* `recordTarget`: This mode **cannot** be used in conjunction with `serverConfig` or `responseGenerator`. Record target specifies the endpoint to proxy all requests to. All resulting mocks to be written out to `recordingFilepath`.
 * `recordingFilepath`: Only valid if `recordTarget` is set. Defaults to `./tmp/record-output-<timestamp>.js` if not configured explicitly.
 
 
@@ -58,6 +58,10 @@ partially mocked responses with the `replyWithDefault` method explained below.
 ```
 
 #### Example 4: Enable Record Mode
+Record mode is used to help auto-generate mocks for a reference API, so that you don't have to start from scratch. It puts wem2k-server into a reverse proxy (similar to [proxy_pass in nginx](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)), but also outputs a mock for each response generated from a given request to `recordingFilepath`.
+
+The general use-case for this is to make a few requests against common endpoints you might hit with the wem2k-server running as a man-in-the-middle, then when you're finished capturing mocks, you can stop the server and optionally edit the resulting file and restart the server with the outputted `recordingFilepath` file as the wem2k-server `serverConfig` file.
+
 ```json
 {
     "recordTarget": "http://localhost:8484",
@@ -95,8 +99,8 @@ WeM2k.mock()
 ```
 
 #### Example 3: Dynamic Mock
-```
-userTable = {
+```js
+const userTable = {
     'email1@wework.com': '22323234'
     'email2@wework.com': '22323235'
     'email3@wework.com': '22323236'
@@ -161,7 +165,7 @@ Other limitations:
 1. Mocks will be processed in a FIFO/queue format, so if two mocks would match the same request (regardless of whether one has more specific criteria than the other), the one that was added first will be used for a response.
 2. Mocks are not persisted after you've added them, so if you need to respond with the same mock multiple times, then you will have to invoke this endpoint the same number of times as you need replies.
 
-### Example
+### Example Update Usage
 ```bash
 # add mock
 curl localhost:8000/wem2k/v1/update -d "{ \"path\": \"/route3\",\"method\": \"post\",\"status\": \"200\",\"response\": {\"a\": \"b\"}}"
