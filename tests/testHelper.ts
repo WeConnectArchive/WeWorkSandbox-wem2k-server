@@ -1,6 +1,6 @@
 import portfinder from 'portfinder'
 
-async function GetFreePort() {
+async function GetFreePort(): Promise<number> {
   return new Promise((resolve, reject) => {
     portfinder.getPort((err, port) => {
       if (err) {
