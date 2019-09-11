@@ -62,23 +62,15 @@ function cleanupTempFiles(): Promise<temp.Stats> {
 }
 
 describe('The WeM2k mocking server', () => {
-  let freePort: any
-  beforeAll(async () =>
-    freePort = await GetFreePort())
-
   describe('when there is no mocking config', () => {
     let config: IConfig
     let requestBuilder: rb.RequestBuilder
     let mockServer: Server
     let responseGenerator: StaticServer
 
-    beforeAll((): Promise<[http.Server, http.Server]> => {
-      config = new MockConfig({
-        port: freePort,
-        responseGenerator: 'http://localhost:1111',
-      })
-      requestBuilder = new rb.RequestBuilder(config)
-      responseGenerator = new StaticServer(1111, (app: express.Express) => {
+    beforeAll(async () => {
+      const expPort = await GetFreePort()
+      responseGenerator = new StaticServer(expPort, (app: express.Express) => {
         app.get('/route1', (_0: express.Request, res: express.Response, _1: express.NextFunction): any => {
           res.status(200).send('Hello World!')
         })
@@ -86,11 +78,18 @@ describe('The WeM2k mocking server', () => {
           res.status(201).send('Another response')
         })
       })
+      await responseGenerator.start()
+      const freePort = await GetFreePort()
+      config = new MockConfig({
+        port: freePort,
+        responseGenerator: `http://localhost:${expPort}`,
+      })
+      requestBuilder = new rb.RequestBuilder(config)
       mockServer = new Server(config)
-      return Promise.all([mockServer.start(), responseGenerator.start()])
+      await mockServer.start()
     })
-    afterAll(() => {
-      return Promise.all([mockServer.stop(), responseGenerator.stop(), cleanupTempFiles()])
+    afterAll(async () => {
+      await Promise.all([mockServer.stop(), responseGenerator.stop(), cleanupTempFiles()])
     })
     test('and the route is valid, it replies with values from the response generator', () => {
       return requestBuilder.request('get', '/route1').then((response: rb.RBResponse) => {
@@ -115,8 +114,9 @@ describe('The WeM2k mocking server', () => {
     let responseGenerator: StaticServer
     let mockServer: Server
 
-    beforeAll((): Promise<[http.Server, http.Server]> => {
-      return makeTempJSFile('\
+    beforeAll(async () => {
+      const expPort = await GetFreePort()
+      const fileName = await makeTempJSFile('\
 WeM2k.mock()\n\
      .get("/route1")\n\
      .reply(200, "This is the new body")\n\
@@ -124,30 +124,31 @@ WeM2k.mock()\n\
      .get("/route2")\n\
      .replyWithDefault(201, function (body){\n\
         return body + " form of lion"\n\
-     })\n').then((fileName: string): Promise<[http.Server, http.Server]> => {
-        config = new MockConfig({
-          port: freePort,
-          responseGenerator: 'http://localhost:1112',
-          serverConfig: fileName,
+     })\n')
+      responseGenerator = new StaticServer(expPort, (app: express.Express) => {
+        app.get('/route1', (_0: express.Request, res: express.Response, _1: express.NextFunction): any => {
+          res.status(200).send('Hello World!')
         })
-        requestBuilder = new rb.RequestBuilder(config)
-        responseGenerator = new StaticServer(1112, (app: express.Express) => {
-          app.get('/route1', (_0: express.Request, res: express.Response, _1: express.NextFunction): any => {
-            res.status(200).send('Hello World!')
-          })
-          app.get('/route2', (_0: express.Request, res: express.Response, _1: express.NextFunction): any => {
-            res.status(200).send('Wonder twins activate,')
-          })
-          app.get('/route3', (_0: express.Request, res: express.Response, _1: express.NextFunction): any => {
-            res.status(200).send('Let me in')
-          })
+        app.get('/route2', (_0: express.Request, res: express.Response, _1: express.NextFunction): any => {
+          res.status(200).send('Wonder twins activate,')
         })
-        mockServer = new Server(config)
-        return Promise.all([mockServer.start(), responseGenerator.start()])
+        app.get('/route3', (_0: express.Request, res: express.Response, _1: express.NextFunction): any => {
+          res.status(200).send('Let me in')
+        })
       })
+      await responseGenerator.start()
+      const freePort = await GetFreePort()
+      config = new MockConfig({
+        port: freePort,
+        responseGenerator: `http://localhost:${expPort}`,
+        serverConfig: fileName,
+      })
+      requestBuilder = new rb.RequestBuilder(config)
+      mockServer = new Server(config)
+      await mockServer.start()
     })
-    afterAll(() => {
-      return Promise.all([mockServer.stop(), responseGenerator.stop(), cleanupTempFiles()])
+    afterAll(async () => {
+      await Promise.all([mockServer.stop(), responseGenerator.stop(), cleanupTempFiles()])
     })
 
     test('it returns replies from the mock configuration file', () => {
@@ -175,22 +176,25 @@ WeM2k.mock()\n\
     let responseGenerator: StaticServer
     let mockServer: Server
 
-    beforeAll((): Promise<[http.Server, http.Server]> => {
-      config = new MockConfig({
-        port: freePort,
-        responseGenerator: 'http://localhost:1113',
-      })
-      requestBuilder = new rb.RequestBuilder(config)
-      responseGenerator = new StaticServer(1113, (app: express.Express) => {
+    beforeAll(async () => {
+      const expPort = await GetFreePort()
+      responseGenerator = new StaticServer(expPort, (app: express.Express) => {
         app.get('/route1', (_0: express.Request, res: express.Response, _1: express.NextFunction): any => {
           res.status(200).send('Hello World!')
         })
       })
+      await responseGenerator.start()
+      const freePort = await GetFreePort()
+      config = new MockConfig({
+        port: freePort,
+        responseGenerator: `http://localhost:${expPort}`,
+      })
+      requestBuilder = new rb.RequestBuilder(config)
       mockServer = new Server(config)
-      return Promise.all([mockServer.start(), responseGenerator.start()])
+      await mockServer.start()
     })
-    afterAll(() => {
-      return Promise.all([mockServer.stop(), responseGenerator.stop(), cleanupTempFiles()])
+    afterAll(async () => {
+      await Promise.all([mockServer.stop(), responseGenerator.stop(), cleanupTempFiles()])
     })
     test('it can dynamically configure mocks', () => {
       return requestBuilder.request('get', '/route2').then((response: rb.RBResponse) => {
@@ -228,10 +232,46 @@ WeM2k.mock()\n\
           expect(response.response.body).toEqual('{"message":"Could not process request. Invalid mock definition."}')
         })
     })
+    test('it can define a post with an unspecified body', async () => {
+      let response = await requestBuilder.request('post', '/post_route')
+      const responseStr = '{ "some": "response body" }'
+      expect(response.response.statusCode).toEqual(404)
+      response = await requestBuilder.request('post',
+          '/wem2k/v1/update',
+          `{ "path": "/post_route",\
+             "method": "post",\
+             "status": "200",\
+             "response": ${responseStr} }`)
+      expect(response.response.statusCode).toEqual(204)
+      response = await requestBuilder.request('post', '/post_route', '{ "can_be": "any body" }')
+      expect(response.response.statusCode).toEqual(200)
+      expect(JSON.parse(response.response.body)).toEqual(JSON.parse(responseStr))
+    })
+    test('it can define a post with matching a specific body', async () => {
+      const postBody = { my: 'specific body'}
+      const responseStr = '{ "matched": "specific body" }'
+      const jsonStr = JSON.stringify(postBody)
+      let response = await requestBuilder.request('post', '/post_route', jsonStr)
+      expect(response.response.statusCode).toEqual(404)
+      response = await requestBuilder.request('post',
+          '/wem2k/v1/update',
+          `{ "path": "/post_route",\
+             "method": "post",\
+             "status": "200",\
+             "response": ${responseStr},
+             "body": ${jsonStr} }`)
+      expect(response.response.statusCode).toEqual(204)
+      response = await requestBuilder.request('post', '/post_route', '{ "some": "other body"}')
+      expect(response.response.statusCode).toEqual(501) // validate it doesn't match for other body
+      response = await requestBuilder.request('post', '/post_route', jsonStr)
+      expect(response.response.statusCode).toEqual(200)
+      expect(JSON.parse(response.response.body)).toEqual(JSON.parse(responseStr))
+    })
   })
   describe('when the mock config has a relative path', () => {
     test('it loads files based off of the cwd', () => {
-      return makeTempJSFile('', { dir: process.cwd() }).then((fileName: string): Promise<http.Server> => {
+      return makeTempJSFile('', { dir: process.cwd() }).then(async (fileName: string): Promise<http.Server> => {
+        const freePort = await GetFreePort()
         let basePath = path.basename(fileName)
         basePath = './' + basePath
         const config = new MockConfig({
@@ -247,7 +287,8 @@ WeM2k.mock()\n\
       })
     })
     test('it can load modules in the cwd', () => {
-      return makeTempJSFile('', { dir: process.cwd() }).then((fileName: string): Promise<http.Server> => {
+      return makeTempJSFile('', { dir: process.cwd() }).then(async (fileName: string): Promise<http.Server> => {
+        const freePort = await GetFreePort()
         const modPath = path.basename(fileName).split('.js')[0]
         const config = new MockConfig({
           port: freePort,
@@ -271,7 +312,8 @@ WeM2k.mock()\n\
       return makeTempJSFile('\
 WeM2k.mock()\n\
      .get("/route1")\n\
-     .reply(200, "This is the new body")\n').then((fileName: string): Promise<http.Server> => {
+     .reply(200, "This is the new body")\n').then(async (fileName: string): Promise<http.Server> => {
+        const freePort = await GetFreePort()
         config = new MockConfig({
           port: freePort,
           serverConfig: fileName,
