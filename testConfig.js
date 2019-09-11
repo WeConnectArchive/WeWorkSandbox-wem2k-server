@@ -1,5 +1,13 @@
 WeM2k.mock()
-  .get('/hello')
+  .persist()
+  .get('/health_check')
+  .replyWithDefault(200, function (body) {
+     console.log(body);
+     return 'This is a healthy endpoint!';
+  });
+
+WeM2k.mock()
+  .get('/hello') // only works once if not persisted
   .replyWithDefault(200, function (body) {
      console.log(body);
      return 'I have been mocked';
@@ -33,5 +41,5 @@ const payload = { euuid: '2b7a2019-13c5-4337-ba60-90b6437d3920',
                   uuid: '2b7a2019-13c5-4337-ba60-90b6437d3920' };
 
 WeM2k.mock()
-  .get('/goodbye')
+  .get('/goodbye') // only works once if not persisted
   .reply(200, 'Hello World!');
