@@ -158,6 +158,19 @@ curl localhost:8000/no_auth/pets/findByStatus?status=available | python -m json.
 ]
 ```
 
+If you want to re-use wem2k-server settings in the docker-compose.yml for an external project, then just use our docker image from quay (`quay.io/wework/wem2k-server:master`) instead of the `build` section:
+
+```diff
+   web:
+-    build:
+-      context: .
+-      dockerfile: ./Dockerfile
++    image: quay.io/wework/wem2k-server:master
+     command: npm run server
+     stdin_open: true
+     tty: true
+```
+
 ## Adding Mocks at Run-time
 If you want to add mocks after wem2k-server is started, you can do so by hitting the `/wem2k/v1/update` endpoint. Note that while the `serverConfig` let's you execute any raw javascript you desire, the `/wem2k/v1/update` endpoint only supports hard-coded values.
 
