@@ -1,5 +1,5 @@
 # WeM2k Server
-[![CircleCI](https://circleci.com/gh/WeWorkSandbox/wem2k-server.svg?style=svg)](https://circleci.com/gh/WeWorkSandbox/wem2k-server)
+[![Build Status](https://travis-ci.com/WeWorkSandbox/wem2k-server.svg?token=6doyD5btqvYDYGuFJCgk&branch=master)](https://travis-ci.com/WeWorkSandbox/wem2k-server)
 [![Coverage Status](https://coveralls.io/repos/github/wework/wem2k-server/badge.svg?branch=master)](https://coveralls.io/github/wework/wem2k-server?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
