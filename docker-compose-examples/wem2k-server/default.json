@@ -1,0 +1,4 @@
+{
+    "responseGenerator": "http://response_generator:4010",
+    "serverConfig": "./testConfig.js"
+}
