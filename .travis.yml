@@ -7,8 +7,26 @@ cache:
   directories:
     - "node_modules"
 
+before_install:
+  - npm run lint
+
+install:
+  - npm install
+
 before_script:
   - npm run build
 
 script:
   - npm test
+
+services:
+  - docker
+
+before_deploy:
+  - docker build -t wework/wem2k-server .
+
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master
