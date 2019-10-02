@@ -7,8 +7,24 @@
 This server can be used to mock out external REST services. The server uses two different
 configuration files, a server settings file and a server configuration file.
 
+## Quick Start
+### Local
+```shell
+$ npm run build
+$ npm start
+$ curl localhost:8000/hello
+I have been mocked%
+```
+### Docker
+```shell
+$ docker pull wework/wem2k-server
+$ docker run -it -p 8000:8000 wework/wem2k-server:latest npm start
+$ curl localhost:8000/hello
+I have been mocked%
+```
+
 ## Configuring the Server
-### Server Settings File
+### Server Settings File (`config/default.json`)
 The server  supports a few different configurations:
 1. Mocking mode
 1. Response generation mode (this configures wem2k-server as a reverse-proxy to a remote endpoint of your choosing)
@@ -73,7 +89,7 @@ The general use-case for this is to make a few requests against common endpoints
     "recordingFilepath": "./tmp/my-recording.js"
 }
 ```
-### Server Configuration File
+### Server Configuration File (`tsConfig.js`)
 The second configuration file (specified by the `serverConfig` file) is the mock configuration file if you choose to use mocking mode. This file is written in JS and you
 can use [nock](http://www.github.com/nock/nock) syntax to control what is mocked out. We have made
 a few modifications to make it easy for you.
