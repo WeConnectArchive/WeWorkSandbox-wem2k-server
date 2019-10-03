@@ -228,5 +228,8 @@ For more advanced usage take a look at the modules we use in the server.
 npm test
 ```
 
+## Documentation
+Documentation is hosted [here](https://weworksandbox.github.io/wem2k-server/).
+
 ## Ownership
 For questions and concerns, reach out to the team at testinfra@wework.com.
