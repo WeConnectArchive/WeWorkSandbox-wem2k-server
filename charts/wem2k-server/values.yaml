@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: draft
-  tag: dev
+  repository: 391691233505.dkr.ecr.us-west-2.amazonaws.com/weworksandbox/wem2k-server
+  tag: 0.0.3
   pullPolicy: IfNotPresent
 
 # define environment variables here as a map of key: value
