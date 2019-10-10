@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:10-alpine
 
 RUN set -ex; \
     apt-get update -y && \
