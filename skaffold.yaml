@@ -4,7 +4,8 @@ build:
   artifacts:
   - image: simdaniel/wem2k-server
     context: .
-    docker: {}
+    docker:
+      network: host
   tagPolicy:
     envTemplate:
       template: '{{.DOCKER_REGISTRY}}/{{.IMAGE_NAME}}:{{.VERSION}}'
