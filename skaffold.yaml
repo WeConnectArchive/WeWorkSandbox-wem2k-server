@@ -1,11 +1,11 @@
-apiVersion: skaffold/v1beta16
+apiVersion: skaffold/v1beta2
 kind: Config
 build:
   artifacts:
   - image: simdaniel/wem2k-server
     context: .
     docker:
-      network: host
+      network: "host"
   tagPolicy:
     envTemplate:
       template: '{{.DOCKER_REGISTRY}}/{{.IMAGE_NAME}}:{{.VERSION}}'
