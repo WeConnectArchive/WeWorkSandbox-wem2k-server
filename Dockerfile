@@ -1,5 +1,8 @@
 FROM node:10
 
+ENV PORT 8000
+EXPOSE 8000
+
 RUN set -ex; \
     apt-get update -y && \
     apt-get install -y --no-install-recommends \
@@ -14,6 +17,5 @@ RUN npm install
 COPY . .
 
 RUN npm run build
-
 
 CMD ["npm", "start"]
